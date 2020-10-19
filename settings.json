@@ -1,0 +1,18 @@
+{
+    "website": {
+        "port": 80,
+        "secret": "session secret password"
+    },
+    "database": "sqlite://database.sqlite",
+    "addons": {
+        "client": {
+            "oauth2": {
+                "id": "discord application id",
+                "secret": "discord application secret",
+                "link": "website link",
+                "callbackpath": "callback path",
+                "prompt": false
+            }
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "index": "index.ejs",
+    "notfound": "404.ejs",
+    "assets": "assets",
+    "pages": {
+        "a": "testing.ejs"
+    },
+    "variables": {
+        "test": "thing"
+    }
+}
