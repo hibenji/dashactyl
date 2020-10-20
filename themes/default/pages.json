@@ -26,6 +26,9 @@
                     "link": "/login"
                 }
             }
+        },
+        "dashboard": {
+            "title": "Dashactyl - Dashboard"
         }
     }
 }

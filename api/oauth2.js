@@ -119,7 +119,7 @@ module.exports.load = async function(app, db) {
           };
         } else {
           let cacheaccount = await fetch(
-            settings.pterodactyl.domain + "/api/application/users/" + (await db.get("users-" + userinfo.id)),
+            settings.pterodactyl.domain + "/api/application/users/" + (await db.get("users-" + userinfo.id)) + "?include=servers",
             {
               method: "get",
               headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
