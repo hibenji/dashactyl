@@ -3,6 +3,10 @@
         "port": 80,
         "secret": "session secret password"
     },
+    "pterodactyl": {
+        "domain": "pterodactyl panel domain link",
+        "key": "pterodactyl admin api code"
+    },
     "database": "sqlite://database.sqlite",
     "addons": {
         "client": {

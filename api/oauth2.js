@@ -1,3 +1,5 @@
+"use strict";
+
 const fs = require("fs");
 
 const settings = require("../settings.json")
@@ -14,62 +16,126 @@ if (settings.api) {
   };
 };
 
+if (settings.pterodactyl) if (settings.pterodactyl.domain) {
+  if (settings.pterodactyl.domain.slice(-1) == "/") settings.pterodactyl.domain = settings.pterodactyl.domain.slice(0, -1);
+};
+
 const fetch = require('node-fetch');
 
 const indexjs = require("../index.js")
 
-module.exports.load = async function(app) {
+module.exports.load = async function(app, db) {
   app.get("/login", async (req, res) => {
-    res.redirect(`https://discord.com/api/oauth2/authorize?client_id=${settings.api.client.oauth2.id}&redirect_uri=${encodeURIComponent(settings.api.client.oauth2.link + settings.api.client.oauth2.callbackpath)}&response_type=code&scope=identify%20email${settings.api.client.oauth2.prompt == false ? "&prompt=none" : ""}`);
+    res.redirect(`https://discord.com/api/oauth2/authorize?client_id=${settings.api.client.oauth2.id}&redirect_uri=${encodeURIComponent(settings.api.client.oauth2.link + settings.api.client.oauth2.callbackpath)}&response_type=code&scope=identify%20email${settings.api.client.oauth2.prompt == false ? "&prompt=none" : (req.query.prompt ? (req.query.prompt == "none" ? "&prompt=none" : "") : "")}`);
   });
 
   app.get("/logout", (req, res) => {
+    let theme = indexjs.get(req);
     req.session.destroy(() => {
-      return res.redirect("/");
+      return res.redirect(theme.settings.logoutredirect ? theme.settings.logoutredirect : "/");
     });
   });
 
   app.get(settings.api.client.oauth2.callbackpath, async (req, res) => {
     if (!req.query.code) return res.send("Missing code.")
-    fetch(
+    let json = await fetch(
       'https://discordapp.com/api/oauth2/token',
       {
         method: "post",
         body: "client_id=" + settings.api.client.oauth2.id + "&client_secret=" + settings.api.client.oauth2.secret + "&grant_type=authorization_code&code=" + encodeURIComponent(req.query.code) + "&redirect_uri=" + encodeURIComponent(settings.api.client.oauth2.link + settings.api.client.oauth2.callbackpath),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }
-    )
-    .then(json => {
-      callbackfunc(json);
-      async function callbackfunc(json) {
-        if (json.ok == true) {
-          let codeinfo = JSON.parse(await json.text());
-          let scopes = codeinfo.scope;
-          let missingscopes = [];
-          if (scopes.replace(/identify/g, "") == scopes) missingscopes.push("identify");
-          if (scopes.replace(/email/g, "") == scopes) missingscopes.push("email");
-          if (missingscopes.length !== 0) return res.send("Missing scopes: " + missingscopes.join(", "));
-          fetch(
-            'https://discordapp.com/api/users/@me',
+    );
+    if (json.ok == true) {
+      let codeinfo = JSON.parse(await json.text());
+      let scopes = codeinfo.scope;
+      let missingscopes = [];
+      if (scopes.replace(/identify/g, "") == scopes) missingscopes.push("identify");
+      if (scopes.replace(/email/g, "") == scopes) missingscopes.push("email");
+      if (missingscopes.length !== 0) return res.send("Missing scopes: " + missingscopes.join(", "));
+      let userjson = await fetch(
+        'https://discordapp.com/api/users/@me',
+        {
+          method: "get",
+          headers: {
+            "Authorization": `Bearer ${codeinfo.access_token}`
+          }
+        }
+      );
+      let userinfo = JSON.parse(await userjson.text());
+      if (userinfo.verified == true) {
+        if (!await db.get("users-" + userinfo.id)) {
+          let accountjson = await fetch(
+            settings.pterodactyl.domain + "/api/application/users",
+            {
+              method: "post",
+              headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${settings.pterodactyl.key}`
+              },
+              body: JSON.stringify({
+                username: userinfo.id,
+                email: userinfo.email,
+                first_name: userinfo.username,
+                last_name: "#" + userinfo.discriminator
+              })
+            }
+          );
+          if (await accountjson.status == 201) {
+            let accountinfo = JSON.parse(await accountjson.text());
+            let userids = await db.get("users") ? await db.get("users") : [];
+            userids.push(accountinfo.attributes.id);
+            await db.set("users", userids);
+            await db.set("users-" + userinfo.id, accountinfo.attributes.id);
+            req.session.pterodactyl = accountinfo.attributes;
+            req.session.newaccount = true;
+          } else {
+            let accountlistjson = await fetch(
+              settings.pterodactyl.domain + "/api/application/users",
+              {
+                method: "get",
+                headers: {
+                  'Content-Type': 'application/json',
+                  "Authorization": `Bearer ${settings.pterodactyl.key}`
+                }
+              }
+            );
+            let accountlist = JSON.parse(await accountlistjson.text());
+            let user = accountlist.data.filter(acc => acc.attributes.email == userinfo.email);
+            if (user.length == 1) {
+              let userid = user[0].attributes.id;
+              let userids = await db.get("users") ? await db.get("users") : [];
+              if (userids.filter(id => id == userid).length == 0) {
+                userids.push(userid);
+                await db.set("users", userids);
+                await db.set("users-" + userinfo.id, userid);
+                req.session.pterodactyl = user[0].attributes;
+              } else {
+                return res.send("We have detected an account with your Discord email on it but the user id has already been claimed on another Discord account.")
+              }
+            } else {
+              return res.send("An error has occured when attempting to create your account.");
+            };
+          };
+        } else {
+          let cacheaccount = await fetch(
+            settings.pterodactyl.domain + "/api/application/users/" + (await db.get("users-" + userinfo.id)),
             {
               method: "get",
-              headers: {
-                "Authorization": `Bearer ${codeinfo.access_token}`
-              }
+              headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
             }
-          ).then(userjson => {
-            callbackfunc2(userjson);
-            async function callbackfunc2(userjson) {
-              let userinfo = JSON.parse(await userjson.text());
-              req.session.userinfo = userinfo;
-              let theme = indexjs.get(req);
-              return res.redirect(theme.settings.callbackredirect ? theme.settings.callbackredirect : "/");
-            };
-          });
-        } else {
-          res.send("Invalid code.");
+          );
+          if (await cacheaccount.statusText == "Not Found") return res.send("It seems like your Pterodactyl Panel account has been deleted therefore you could not be signed in.");
+          let cacheaccountinfo = JSON.parse(await cacheaccount.text());
+          req.session.pterodactyl = cacheaccountinfo.attributes;
         };
+        req.session.userinfo = userinfo;
+        let theme = indexjs.get(req);
+        return res.redirect(theme.settings.callbackredirect ? theme.settings.callbackredirect : "/");
       };
-    });
+      res.send("Not verified a Discord account.");
+    } else {
+      res.send("Invalid code.");
+    };
   });
 };

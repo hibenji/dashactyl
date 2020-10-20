@@ -2,10 +2,14 @@
     "index": "index.ejs",
     "notfound": "404.ejs",
     "assets": "assets",
-    "callbackredirect": "/",
+    "callbackredirect": "/dashboard",
+    "logoutredirect": "/",
     "pages": {
-        "a": "testing.ejs"
+        "dashboard": "dashboard.ejs"
     },
+    "mustbeloggedin": [
+        "/dashboard"
+    ],
     "variables": {
         "home": {
             "title": "Dashactyl - Home",
@@ -14,8 +18,8 @@
             "bottommsg": "An dashboard addition to the Pterodactyl Panel.",
             "buttontext": {
                 "loggedin": {
-                    "text": "Your Servers",
-                    "link": ""
+                    "text": "Dashboard",
+                    "link": "/dashboard"
                 },
                 "loggedout": {
                     "text": "Login",

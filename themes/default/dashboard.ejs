@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link href="/assets/default/style.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <title><%= extra.home.title %> - Home</title>
+    </head>
+    <body>
+        <ul style="overflow: hidden;" class="ul">
+            <li style="float:left; margin-top: 12px; margin-left: 10%;"><a href="/" style="font-family: 'Rubik', sans-serif; font-size: 25px"><%= extra.home.name %></a></li>
+            <li style="float:right; margin-right: 20%" class="li">
+                <a href="<%= userinfo ? "/logout" : "/login"%>"><i class="fa fa-<%= userinfo ? "sign-out": "fw fa-user" %>" style="color: gray; margin-top: 10px;"></i></a>
+            </li>
+        </ul>
+        <h2 style="margin-left: 5%; margin-top: 50px;">Your Account</h2>
+        <h4 style="margin-left: 5%;">Panel Link: <a href="/panel" style="color: #9DBCDA"><%= settings.pterodactyl.domain %></a></h4>
+        <div style="margin-left: 5%; margin-top: 10px; width: 80%; margin-bottom: 10px">
+            <br>
+            <h4 style="margin-left: 5%;">Email</h4>
+            <input value="<%= pterodactyl.email %>" style="margin-left: 5%;" disabled>
+            <h4 style="margin-left: 5%;">Username</h4>
+            <input value="<%= pterodactyl.username %>" style="margin-left: 5%;" disabled>
+            <br><br><br><br>
+        </div>
+    </body>
+</html>

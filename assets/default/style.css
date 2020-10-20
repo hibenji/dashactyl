@@ -35,7 +35,7 @@ a {
 h1 {
     color: #FFFFFF;
 }
-h3 {
+h2, h3, h4 {
     color: #CAD1D8;
 }
 .button {
@@ -56,4 +56,18 @@ h3 {
 }
 .button:hover {
     border-color: #606D7B;
+}
+div {
+    background-color: #3f4d5a;
+    border-radius: 5px;
+}
+input {
+    border: 1px solid #606D7B;
+    background-color: #606D7B;
+    color: #CAD1D8;
+    border-radius: 5px;
+    width: 80%;
+    height: 5%;
+    padding: 2% 3%;
+    font-size: 100%
 }
