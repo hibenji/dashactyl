@@ -15,6 +15,25 @@
             </li>
         </ul>
         <h2 style="margin-left: 5%; margin-top: 50px;">Your Account</h2>
+        <% if (req.session.newaccount) { %>
+            <div class="alert">
+                <span class="closebtn">&times;</span>  
+                A new account has been created for you on the Pterodactyl Panel.<br>
+                Please check your email to set your password.
+            </div>
+            <script>
+                let close = document.getElementsByClassName("closebtn");
+                let i;
+                
+                for (i = 0; i < close.length; i++) {
+                  close[i].onclick = function(){
+                    let div = this.parentElement;
+                    div.style.opacity = "0";
+                    setTimeout(function(){ div.style.display = "none"; }, 600);
+                  }
+                }
+            </script>
+        <% } %>
         <h4 style="margin-left: 5%;">Panel Link: <a href="/panel" style="color: #9DBCDA"><%= settings.pterodactyl.domain %></a></h4>
         <div style="margin-left: 5%; margin-top: 10px; width: 80%; margin-bottom: 10px">
             <br>
