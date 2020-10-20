@@ -2,10 +2,26 @@
     "index": "index.ejs",
     "notfound": "404.ejs",
     "assets": "assets",
+    "callbackredirect": "/",
     "pages": {
         "a": "testing.ejs"
     },
     "variables": {
-        "test": "thing"
+        "home": {
+            "title": "Dashactyl - Home",
+            "name": "Dashactyl",
+            "topmsg": "Dashactyl",
+            "bottommsg": "An dashboard addition to the Pterodactyl Panel.",
+            "buttontext": {
+                "loggedin": {
+                    "text": "Your Servers",
+                    "link": ""
+                },
+                "loggedout": {
+                    "text": "Login",
+                    "link": "/login"
+                }
+            }
+        }
     }
 }

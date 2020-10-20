@@ -1,8 +1,23 @@
 <html>
     <head>
-        <title>hi</title>
+        <link href="/assets/default/style.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <title><%= extra.home.title %> - Home</title>
     </head>
     <body>
-        hi
+        <ul style="overflow: hidden;" class="ul">
+            <li style="float:left; margin-top: 12px; margin-left: 10%;"><a href="#" style="font-family: 'Rubik', sans-serif; font-size: 25px"><%= extra.home.name %></a></li>
+            <li style="float:right; margin-right: 20%" class="li">
+                <a href="<%= userinfo ? "/logout" : "/login"%>"><i class="fa fa-<%= userinfo ? "sign-out": "fw fa-user" %>" style="color: gray; margin-top: 10px;"></i></a>
+            </li>
+        </ul>
+        <center style="margin-top: 50px;">
+            <h1><%= extra.home.topmsg %></h1>
+            <h3><%= extra.home.bottommsg %></h3>
+            <br><br>
+            <button class="button" onclick="window.location.href = '<%= userinfo ? extra.home.buttontext.loggedin.link : extra.home.buttontext.loggedout.link %>';"><%= userinfo ? extra.home.buttontext.loggedin.text : extra.home.buttontext.loggedout.text %></button>
+        </center>
     </body>
 </html>

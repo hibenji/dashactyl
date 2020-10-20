@@ -8,8 +8,19 @@ const defaultthemesettings = {
   "index": "index.ejs",
   "notfound": "404.ejs",
   "pages": {},
-  "variables": undefined
+  "variables": undefined,
+  "callbackredirect": "/"
 }
+
+const renderdataeval =
+  `
+    let renderdata = {
+      settings: settings,
+      userinfo: req.session.userinfo,
+      extra: theme.settings.variables
+    };
+    renderdata;
+  `
 
 // Load database
 
@@ -24,6 +35,7 @@ keyv.on('error', err => {
 
 const fs = require("fs");
 const fetch = require('node-fetch');
+const indexjs = require("./index.js");
 
 // Load websites.
 
@@ -55,12 +67,10 @@ const listener = app.listen(settings.website.port, function() {
 // Home Page
 
 app.get("/", async (req, res) => {
-  let theme = get(req);
+  let theme = indexjs.get(req);
   ejs.renderFile(
     `./themes/${theme.name}/${theme.settings.index}`, 
-    {
-      extra: theme.settings.variables
-    },
+    eval(renderdataeval),
     null,
   function (err, str) {
     if (err) {
@@ -80,15 +90,15 @@ for (let file of apifiles) {
 	(require(`./api/${file}`)).load(app);
 }
 
-// Custom Pages
+// Custom Pages + Assets
+
+app.use('/assets', express.static('./assets'));
 
 app.get("*", async (req, res) => {
-  let theme = get(req);
+  let theme = indexjs.get(req);
   ejs.renderFile(
     `./themes/${theme.name}/${theme.settings.pages[req._parsedUrl.pathname.slice(1)] ? theme.settings.pages[req._parsedUrl.pathname.slice(1)] : theme.settings.notfound}`, 
-    {
-      extra: theme.settings.variables
-    },
+    eval(renderdataeval),
     null,
   function (err, str) {
     if (err) {
@@ -100,7 +110,7 @@ app.get("*", async (req, res) => {
   });
 });
 
-function get(req) {
+module.exports.get = function get(req) {
   let tname = getCookie(req, "theme");
   let name = (
     tname ?
