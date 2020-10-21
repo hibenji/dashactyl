@@ -13,19 +13,6 @@ const defaultthemesettings = {
   "callbackredirect": "/"
 }
 
-const renderdataeval =
-  `//(async () => {
-    let renderdata = {
-      req: req,
-      settings: settings,
-      userinfo: req.session.userinfo,
-      pterodactyl: req.session.pterodactyl,
-      extra: theme.settings.variables
-    };
-    renderdata;
-    //return renderdata;
-  //})();`;
-
 // Load database
 
 const Keyv = require("keyv");
@@ -38,7 +25,6 @@ keyv.on('error', err => {
 // Load packages.
 
 const fs = require("fs");
-const indexjs = require("./index.js");
 
 // Load websites.
 
@@ -63,48 +49,8 @@ app.use(express.json({
   verify: undefined
 }));
 
-var cache = false;
-app.use(function(req, res, next) { // Caching manager.
-  let manager = JSON.parse(fs.readFileSync("pterodactyl-panel-rate-limit-manager.json").toString());
-  if (manager[req._parsedUrl.pathname]) {
-    if (cache == true) {
-      setTimeout(async () => {
-        res.redirect(req.originalUrl);
-      }, 1000);
-      return;
-    } else {
-      cache = true;
-      setTimeout(async () => {
-        cache = false;
-      }, 1000 * manager[req._parsedUrl.pathname]);
-    }
-  };
-  next();
-});
-
 const listener = app.listen(settings.website.port, function() {
   console.log("[WEBSITE] The dashboard has successfully loaded on port " + listener.address().port + ".");
-});
-
-// Home Page
-
-app.get("/", async (req, res) => {
-  if (req.session.pterodactyl) if (req.session.pterodactyl.id !== await keyv.get("users-" + req.session.userinfo.id)) return res.redirect("/login?prompt=none")
-  let theme = indexjs.get(req);
-  if (theme.settings.mustbeloggedin.includes(req._parsedUrl.pathname)) if (!req.session.userinfo || !req.session.pterodactyl) return res.redirect("/login");
-  ejs.renderFile(
-    `./themes/${theme.name}/${theme.settings.index}`, 
-    await eval(renderdataeval),
-    null,
-  function (err, str) {
-    if (err) {
-      console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
-      console.log(err);
-      return res.send("404");
-    };
-    delete req.session.newaccount;
-    res.send(str);
-  });
 });
 
 // Load the API files.
@@ -114,29 +60,6 @@ let apifiles = fs.readdirSync('./api').filter(file => file.endsWith('.js'));
 for (let file of apifiles) {
 	(require(`./api/${file}`)).load(app, keyv);
 }
-
-// Custom Pages + Assets
-
-app.use('/assets', express.static('./assets'));
-
-app.get("*", async (req, res) => {
-  if (req.session.pterodactyl) if (req.session.pterodactyl.id !== await keyv.get("users-" + req.session.userinfo.id)) return res.redirect("/login?prompt=none");
-  let theme = indexjs.get(req);
-  if (theme.settings.mustbeloggedin.includes(req._parsedUrl.pathname)) if (!req.session.userinfo || !req.session.pterodactyl) return res.redirect("/login");
-  ejs.renderFile(
-    `./themes/${theme.name}/${theme.settings.pages[req._parsedUrl.pathname.slice(1)] ? theme.settings.pages[req._parsedUrl.pathname.slice(1)] : theme.settings.notfound}`, 
-    await eval(renderdataeval),
-    null,
-  function (err, str) {
-    delete req.session.newaccount;
-    if (err) {
-      console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
-      console.log(err);
-      return res.send("404");
-    };
-    res.send(str);
-  });
-});
 
 module.exports.get = function get(req) {
   let tname = getCookie(req, "theme");
