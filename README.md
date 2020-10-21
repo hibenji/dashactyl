@@ -6,8 +6,8 @@ To install Dashactyl you must have basic knowledge of NodeJS, JS and Linux.
 ---  
 You will need: NodeJS (apt-get install nodejs), Git (apt-get install git).
 ```
-git clone https://github.com/real2two/dashactyl.git  
-cd dashactyl  
+git clone https://github.com/real2two/dashactyl.git
+cd dashactyl
 npm install
 ```
 ---  
