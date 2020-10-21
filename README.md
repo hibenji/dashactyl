@@ -11,7 +11,7 @@ cd dashactyl
 npm install  
 ```
 ---  
-You will need to edit settings.yml and change the logo/theme to your branding.  
+You will need to edit `settings.yml` and `./themes/default/pages.json` in order to change the customization options.
 # Copyright
 You may not claim this work as your own unless given explicit permission from the staff team.  
 You may not resell this product in any way shape or form unless you are selling the products made using this product.  
