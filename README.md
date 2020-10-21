@@ -8,7 +8,7 @@ You will need: NodeJS (apt-get install nodejs), Git (apt-get install git).
 ```
 git clone https://github.com/real2two/dashactyl.git  
 cd dashactyl  
-npm install  
+npm install
 ```
 ---  
 You will need to edit `settings.yml` and `./themes/default/pages.json` in order to change the customization options.
