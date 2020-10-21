@@ -53,6 +53,25 @@ const listener = app.listen(settings.website.port, function() {
   console.log("[WEBSITE] The dashboard has successfully loaded on port " + listener.address().port + ".");
 });
 
+var cache = false;
+app.use(function(req, res, next) {
+  let manager = (JSON.parse(fs.readFileSync("./settings.json").toString())).api.client.ratelimits;
+  if (manager[req._parsedUrl.pathname]) {
+    if (cache == true) {
+      setTimeout(async () => {
+        res.redirect(req.originalUrl);
+      }, 1000);
+      return;
+    } else {
+      cache = true;
+      setTimeout(async () => {
+        cache = false;
+      }, 1000 * manager[req._parsedUrl.pathname]);
+    }
+  };
+  next();
+});
+
 // Load the API files.
 
 let apifiles = fs.readdirSync('./api').filter(file => file.endsWith('.js'));

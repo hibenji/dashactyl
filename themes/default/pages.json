@@ -5,10 +5,12 @@
     "callbackredirect": "/dashboard",
     "logoutredirect": "/",
     "pages": {
-        "dashboard": "dashboard.ejs"
+        "dashboard": "dashboard.ejs",
+        "servers": "servers.ejs"
     },
     "mustbeloggedin": [
-        "/dashboard"
+        "/dashboard",
+        "/servers"
     ],
     "variables": {
         "home": {

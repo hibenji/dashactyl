@@ -16,6 +16,9 @@
                 "link": "website link",
                 "callbackpath": "callback path",
                 "prompt": false
+            },
+            "ratelimits": {
+                "/callback": 2
             }
         }
     }

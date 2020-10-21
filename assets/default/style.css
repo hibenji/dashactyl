@@ -93,6 +93,9 @@ input {
 .closebtn:hover {
     color: black;
 }
+code {
+    color: #FF9898;
+}
 
 table {
     font-family: arial, sans-serif;
@@ -100,7 +103,7 @@ table {
     width: 80%;
 }
 td, th {
-    border: 1px solid #3f4d5a;
+    border: 1px solid #606D7B;
     text-align: left;
     padding: 8px;
 }

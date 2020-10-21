@@ -43,28 +43,22 @@
             <input value="<%= pterodactyl.username %>" style="margin-left: 5%;" disabled>
             <br><br><br><br>
         </div>
-        <h2 style="margin-left: 5%;">Servers</h2>
-        <button class="button" style="margin-left: 5%; width: 40%;" onclick="window.location.href='/login'">Create a new server.</button>
-        <button class="button" style="width: 40%;" onclick="window.location.href='/login?prompt=none'">Update your server list.</button>
-        <br><br>
-        <table style="margin-left: 5%;">
-            <tr>
-                <th style="background-color: #1f2933;"><center>Name</center></th>
-                <th style="background-color: #1f2933;"><center>RAM</center></th>
-                <th style="background-color: #1f2933;"><center>Disk</center></th>
-                <th style="background-color: #1f2933;"><center>CPU</center></th>
-                <th style="background-color: #1f2933;"><center>Delete</center></th>
-            </tr>
-            <% for (let i = 0, len = pterodactyl.relationships.servers.data.length; i < len; i++) { %>
-                <tr>
-                    <th><center><%= pterodactyl.relationships.servers.data[i].attributes.name %></center></th>
-                    <th><center><%= pterodactyl.relationships.servers.data[i].attributes.limits.memory %>MB</center></th>
-                    <th><center><%= pterodactyl.relationships.servers.data[i].attributes.limits.disk %>MB</center></th>
-                    <th><center><%= pterodactyl.relationships.servers.data[i].attributes.limits.cpu %>%</center></th>
-                    <th><center>[button]</center></th>
-                </tr>
-            <% } %>
-        </table>
-        <p style="margin-left: 5%;"><%= JSON.stringify(pterodactyl.relationships.servers.data) %></p>
+        <h2 style="margin-left: 5%;">Plan</h2>
+        <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.href='/servers'">View your servers.</button>
+        <%
+            let ram = 0;
+            let disk = 0;
+            let cpu = 0;
+            let servers = pterodactyl.relationships.servers.data.length;
+            for (let i = 0, len = pterodactyl.relationships.servers.data.length; i < len; i++) {
+                ram = ram + pterodactyl.relationships.servers.data[i].attributes.limits.memory;
+                disk = disk + pterodactyl.relationships.servers.data[i].attributes.limits.disk;
+                cpu = cpu + pterodactyl.relationships.servers.data[i].attributes.limits.cpu;
+            }
+        %>
+        <p style="margin-left: 5%;">RAM: <code><%= ram %>MB</code> / <code>maxMB</code></p>
+        <p style="margin-left: 5%;">Disk: <code><%= disk %>MB</code> / <code>maxMB</code></p>
+        <p style="margin-left: 5%;">CPU: <code><%= cpu %>%</code> / <code>max%</code></p>
+        <p style="margin-left: 5%;">Servers: <code><%= servers %> server<%= servers == 1 ? "" : "s" %></code> / <code>max servers</code></p>
     </body>
 </html>

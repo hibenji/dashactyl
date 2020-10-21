@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link href="/assets/default/style.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <title><%= extra.dashboard.title %></title>
+    </head>
+    <body>
+        <ul style="overflow: hidden;" class="ul">
+            <li style="float:left; margin-top: 12px; margin-left: 10%;"><a href="/" style="font-family: 'Rubik', sans-serif; font-size: 25px"><%= extra.home.name %></a></li>
+            <li style="float:right; margin-right: 20%" class="li">
+                <a href="<%= userinfo ? "/logout" : "/login"%>"><i class="fa fa-<%= userinfo ? "sign-out": "fw fa-user" %>" style="color: gray; margin-top: 10px;"></i></a>
+            </li>
+        </ul>
+        <h2 style="margin-left: 5%; margin-top: 50px;">Servers</h2>
+        <button class="button" style="margin-left: 5%; width: 40%;" onclick="window.location.href='/servers/new'">Create a new server.</button>
+        <button class="button" style="width: 40%;" onclick="window.location.href='/login?prompt=none&redirect=servers'">Update your server list.</button>
+        <br><br>
+        <table style="margin-left: 5%;">
+            <tr>
+                <th style="background-color: #1f2933;"><center>Name</center></th>
+                <th style="background-color: #1f2933;"><center>RAM</center></th>
+                <th style="background-color: #1f2933;"><center>Disk</center></th>
+                <th style="background-color: #1f2933;"><center>CPU</center></th>
+                <th style="background-color: #1f2933;"><center>Delete</center></th>
+            </tr>
+            <% for (let i = 0, len = pterodactyl.relationships.servers.data.length; i < len; i++) { %>
+                <tr>
+                    <th style="width:20%;"><center><%= pterodactyl.relationships.servers.data[i].attributes.name %></center></th>
+                    <th style="width:20%;"><center><%= pterodactyl.relationships.servers.data[i].attributes.limits.memory %>MB</center></th>
+                    <th style="width:20%;"><center><%= pterodactyl.relationships.servers.data[i].attributes.limits.disk %>MB</center></th>
+                    <th style="width:20%;"><center><%= pterodactyl.relationships.servers.data[i].attributes.limits.cpu %>%</center></th>
+                    <th style="width:20%;"><center><button class="button" style="background-color: #33404D; width: 80%" onclick="window.location.href='/delete?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'">Delete</button></center></th>
+                </tr>
+            <% } %>
+        </table>
+        <p style="margin-left: 5%;"><%= JSON.stringify(pterodactyl.relationships.servers.data) %></p>
+    </body>
+</html>

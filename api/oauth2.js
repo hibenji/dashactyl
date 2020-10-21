@@ -26,6 +26,7 @@ const indexjs = require("../index.js")
 
 module.exports.load = async function(app, db) {
   app.get("/login", async (req, res) => {
+    if (req.query.redirect) req.session.redirect = "/" + req.query.redirect
     res.redirect(`https://discord.com/api/oauth2/authorize?client_id=${settings.api.client.oauth2.id}&redirect_uri=${encodeURIComponent(settings.api.client.oauth2.link + settings.api.client.oauth2.callbackpath)}&response_type=code&scope=identify%20email${settings.api.client.oauth2.prompt == false ? "&prompt=none" : (req.query.prompt ? (req.query.prompt == "none" ? "&prompt=none" : "") : "")}`);
   });
 
@@ -37,6 +38,8 @@ module.exports.load = async function(app, db) {
   });
 
   app.get(settings.api.client.oauth2.callbackpath, async (req, res) => {
+    let customredirect = req.session.redirect;
+    delete req.session.redirect;
     if (!req.query.code) return res.send("Missing code.")
     let json = await fetch(
       'https://discordapp.com/api/oauth2/token',
@@ -131,6 +134,7 @@ module.exports.load = async function(app, db) {
         };
         req.session.userinfo = userinfo;
         let theme = indexjs.get(req);
+        if (customredirect) return res.redirect(customredirect);
         return res.redirect(theme.settings.callbackredirect ? theme.settings.callbackredirect : "/");
       };
       res.send("Not verified a Discord account.");
