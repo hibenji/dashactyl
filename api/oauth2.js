@@ -1,8 +1,6 @@
 "use strict";
 
-const fs = require("fs");
-
-const settings = require("../settings.json")
+const settings = require("../settings.json");
 if (settings.api) {
   if (settings.api.client) {
       if (settings.api.client.oauth2) {
@@ -33,7 +31,7 @@ module.exports.load = async function(app, db) {
   app.get("/logout", (req, res) => {
     let theme = indexjs.get(req);
     req.session.destroy(() => {
-      return res.redirect(theme.settings.logoutredirect ? theme.settings.logoutredirect : "/");
+      return res.redirect(theme.settings.redirect.logout ? theme.settings.redirect.logout : "/");
     });
   });
 
@@ -135,7 +133,7 @@ module.exports.load = async function(app, db) {
         req.session.userinfo = userinfo;
         let theme = indexjs.get(req);
         if (customredirect) return res.redirect(customredirect);
-        return res.redirect(theme.settings.callbackredirect ? theme.settings.callbackredirect : "/");
+        return res.redirect(theme.settings.redirect.callback ? theme.settings.redirect.callback : "/");
       };
       res.send("Not verified a Discord account.");
     } else {

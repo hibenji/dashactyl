@@ -6,21 +6,41 @@ const settings = require("./settings.json");
 
 const defaultthemesettings = {
   "index": "index.ejs",
-  "notfound": "404.ejs",
+  "notfound": "index.ejs",
+  "assets": "assets",
+  "redirect": {
+      "callback": "/",
+      "logout": "/",
+      "deleteserver": "/"
+  },
   "pages": {},
   "mustbeloggedin": [],
-  "variables": undefined,
-  "callbackredirect": "/"
-}
+  "variables": {}
+};
+
+module.exports.renderdataeval =
+  `//(async () => {
+    let renderdata = {
+      req: req,
+      settings: settings,
+      userinfo: req.session.userinfo,
+      pterodactyl: req.session.pterodactyl,
+      extra: theme.settings.variables
+    };
+    renderdata;
+    //return renderdata;
+  //})();`;
 
 // Load database
 
 const Keyv = require("keyv");
-const keyv = new Keyv(settings.database);
+const db = new Keyv(settings.database);
 
-keyv.on('error', err => {
+db.on('error', err => {
   console.log("[DATABASE] An error has occured when attempting to access the database.")
 });
+
+module.exports.db = db;
 
 // Load packages.
 
@@ -35,8 +55,11 @@ const app = express();
 
 const ejs = require("ejs");
 const session = require("express-session");
+const indexjs = require("./index.js");
 
 // Load the website.
+
+module.exports.app = app;
 
 app.use(session({secret: settings.website.secret}));
 
@@ -76,9 +99,29 @@ app.use(function(req, res, next) {
 
 let apifiles = fs.readdirSync('./api').filter(file => file.endsWith('.js'));
 
-for (let file of apifiles) {
-	(require(`./api/${file}`)).load(app, keyv);
-}
+apifiles.forEach(file => {
+  let apifile = require(`./api/${file}`);
+	apifile.load(app, db);
+});
+
+app.get("*", async (req, res) => {
+  if (req.session.pterodactyl) if (req.session.pterodactyl.id !== await db.get("users-" + req.session.userinfo.id)) return res.redirect("/login?prompt=none");
+  let theme = indexjs.get(req);
+  if (theme.settings.mustbeloggedin.includes(req._parsedUrl.pathname)) if (!req.session.userinfo || !req.session.pterodactyl) return res.redirect("/login" + (req._parsedUrl.pathname.slice(0, 1) == "/" ? "?redirect=" + req._parsedUrl.pathname.slice(1) : ""));
+  ejs.renderFile(
+    `./themes/${theme.name}/${theme.settings.pages[req._parsedUrl.pathname.slice(1)] ? theme.settings.pages[req._parsedUrl.pathname.slice(1)] : theme.settings.notfound}`, 
+    await eval(indexjs.renderdataeval),
+    null,
+  function (err, str) {
+    delete req.session.newaccount;
+    if (err) {
+      console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
+      console.log(err);
+      return res.send("404");
+    };
+    res.send(str);
+  });
+});
 
 module.exports.get = function get(req) {
   let tname = getCookie(req, "theme");

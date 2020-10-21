@@ -1,11 +1,12 @@
 <html>
     <head>
+        <link rel="icon" type="image/png" href="<%= extra.faviconlink %>"/>
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link href="/assets/default/style.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <title><%= extra.dashboard.title %></title>
+        <title><%= extra.servers.title.list %></title>
     </head>
     <body>
         <ul style="overflow: hidden;" class="ul">
@@ -14,10 +15,12 @@
                 <a href="<%= userinfo ? "/logout" : "/login"%>"><i class="fa fa-<%= userinfo ? "sign-out": "fw fa-user" %>" style="color: gray; margin-top: 10px;"></i></a>
             </li>
         </ul>
-        <h2 style="margin-left: 5%; margin-top: 50px;">Servers</h2>
+        <button style="margin-left: 5%; margin-top: 50px;" class="button" onclick="window.location.href = '/dashboard'">Back</button>
+        <h2 style="margin-left: 5%;">Servers</h2>
         <button class="button" style="margin-left: 5%; width: 40%;" onclick="window.location.href='/servers/new'">Create a new server.</button>
         <button class="button" style="width: 40%;" onclick="window.location.href='/login?prompt=none&redirect=servers'">Update your server list.</button>
         <br><br>
+        <h3 style="margin-left: 5%;">Server List</h3>
         <table style="margin-left: 5%;">
             <tr>
                 <th style="background-color: #1f2933;"><center>Name</center></th>
@@ -26,6 +29,14 @@
                 <th style="background-color: #1f2933;"><center>CPU</center></th>
                 <th style="background-color: #1f2933;"><center>Delete</center></th>
             </tr>
+        <% if (pterodactyl.relationships.servers.data.length == 0) { %>
+            </table>
+            <table style="margin-left: 5%;">
+                <tr>
+                    <th><center>You do not own any servers.</center></th>
+                </tr>
+            </table>
+        <% } else { %>
             <% for (let i = 0, len = pterodactyl.relationships.servers.data.length; i < len; i++) { %>
                 <tr>
                     <th style="width:20%;"><center><%= pterodactyl.relationships.servers.data[i].attributes.name %></center></th>
@@ -35,7 +46,7 @@
                     <th style="width:20%;"><center><button class="button" style="background-color: #33404D; width: 80%" onclick="window.location.href='/delete?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'">Delete</button></center></th>
                 </tr>
             <% } %>
-        </table>
-        <p style="margin-left: 5%;"><%= JSON.stringify(pterodactyl.relationships.servers.data) %></p>
+            </table>
+        <% } %>
     </body>
 </html>

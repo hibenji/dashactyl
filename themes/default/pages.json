@@ -2,17 +2,23 @@
     "index": "index.ejs",
     "notfound": "404.ejs",
     "assets": "assets",
-    "callbackredirect": "/dashboard",
-    "logoutredirect": "/",
+    "redirect": {
+        "callback": "/dashboard",
+        "logout": "/",
+        "deleteserver": "/servers"
+    },
     "pages": {
         "dashboard": "dashboard.ejs",
-        "servers": "servers.ejs"
+        "servers": "servers.ejs",
+        "servers/new": "newserver.ejs"
     },
     "mustbeloggedin": [
         "/dashboard",
-        "/servers"
+        "/servers",
+        "/servers/new"
     ],
     "variables": {
+        "faviconlink": "",
         "home": {
             "title": "Dashactyl - Home",
             "name": "Dashactyl",
@@ -31,6 +37,12 @@
         },
         "dashboard": {
             "title": "Dashactyl - Dashboard"
+        },
+        "servers": {
+            "title": {
+                "list": "Dashactyl - Servers",
+                "create": "Dashactyl - Create Server"
+            }
         }
     }
 }

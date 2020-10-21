@@ -18,7 +18,9 @@
                 "prompt": false
             },
             "ratelimits": {
-                "/callback": 2
+                "/callback": 2,
+                "/create": 0,
+                "/delete": 1
             }
         }
     }
