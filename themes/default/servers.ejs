@@ -21,6 +21,31 @@
         <button class="button" style="width: 40%;" onclick="window.location.href='/login?prompt=none&redirect=servers'">Update your server list.</button>
         <br><br>
         <h3 style="margin-left: 5%;">Server List</h3>
+        <!-- Make mobile support. -->
+        <% for (let i = 0, len = pterodactyl.relationships.servers.data.length; i < len; i++) { %>
+            <div style="margin-left: 5%; width: 80%;">
+                <h2 style="float: left; margin-top: 38px; margin-left: 2%;">
+                    <%= pterodactyl.relationships.servers.data[i].attributes.name %>
+                </h2>
+                <span style="float: right; margin-top: 38px; margin-right: 2%;">
+                    <button class="button" style="background-color: #dd4c39;" onclick="window.location.href='/delete?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'">Delete</button>
+                </span>
+                <span style="float: right; margin-top: 38px; margin-right: 2%;">
+                    <h3 style="margin: 0px; color: #b3b3b3;">Disk:</h3>
+                    <span style="color: #8a939c;"><%= pterodactyl.relationships.servers.data[i].attributes.limits.disk %>MB</span>
+                </span>
+                <span style="float: right; margin-top: 38px; margin-right: 2%;">
+                    <h3 style="margin: 0px; color: #b3b3b3;">Ram:</h3>
+                    <span style="color: #8a939c;"><%= pterodactyl.relationships.servers.data[i].attributes.limits.memory %>MB</span>
+                </span>
+                <span style="float: right; margin-top: 38px; margin-right: 2%;">
+                    <h3 style="margin: 0px; color: #b3b3b3;">CPU:</h3>
+                    <span style="color: #8a939c;"><%= pterodactyl.relationships.servers.data[i].attributes.limits.cpu %>%</span>
+                </span>
+                <br><br><br><br><br><br>
+            </div>
+        <% } %>
+        <br><br><br>
         <table style="margin-left: 5%;">
             <tr>
                 <th style="background-color: #1f2933;"><center>Name</center></th>

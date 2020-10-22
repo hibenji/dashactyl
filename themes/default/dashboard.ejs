@@ -46,6 +46,7 @@
         </div>
         <h2 style="margin-left: 5%;">Plan</h2>
         <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.href='/servers'">View your servers.</button>
+        <br><br>
         <%
             let ram = 0;
             let disk = 0;
@@ -57,9 +58,36 @@
                 cpu = cpu + pterodactyl.relationships.servers.data[i].attributes.limits.cpu;
             }
         %>
-        <p style="margin-left: 5%;">RAM: <code><%= ram %>MB</code> / <code>maxMB</code></p>
-        <p style="margin-left: 5%;">Disk: <code><%= disk %>MB</code> / <code>maxMB</code></p>
-        <p style="margin-left: 5%;">CPU: <code><%= cpu %>%</code> / <code>max%</code></p>
-        <p style="margin-left: 5%;">Servers: <code><%= servers %> server<%= servers == 1 ? "" : "s" %></code> / <code>max servers</code></p>
+        
+        <div class="row" style="background-color: transparent; margin-left: 5%; width: 80%;">
+            <div class="column" style="background-color: transparent;">
+                <div class="card">
+                    <h3>RAM</h3>
+                    <p><code><%= ram %>MB</code> / <code>maxMB</code></p>
+                    <progress value="50" max="100" style="width: 100%;"></progress>
+                </div>
+            </div>
+            <div class="column" style="background-color: transparent;">
+                <div class="card">
+                    <h3>Disk</h3>
+                    <p><code><%= disk %>MB</code> / <code>maxMB</code></p>
+                    <progress value="50" max="100" style="width: 100%;"></progress>
+                </div>
+            </div>
+            <div class="column" style="background-color: transparent;">
+                <div class="card">
+                    <h3>CPU</h3>
+                    <p><code><%= cpu %>%</code> / <code>max%</code></p>
+                    <progress value="50" max="100" style="width: 100%;"></progress>
+                </div>
+            </div>
+            <div class="column" style="background-color: transparent;">
+                <div class="card">
+                    <h3>Servers</h3>
+                    <p><code><%= servers %> server<%= servers == 1 ? "" : "s" %></code> / <code>max servers</code></p>
+                    <progress value="50" max="100" style="width: 100%;"></progress>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
