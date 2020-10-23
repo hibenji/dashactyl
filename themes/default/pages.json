@@ -1,11 +1,13 @@
 {
     "index": "index.ejs",
     "notfound": "404.ejs",
-    "assets": "assets",
     "redirect": {
         "callback": "/dashboard",
         "logout": "/",
-        "deleteserver": "/servers"
+        "deleteserver": "/servers",
+        "updateservers": "/dashboard",
+        "createserver": "/servers",
+        "failedcreateserver": "/servers/new"
     },
     "pages": {
         "dashboard": "dashboard.ejs",

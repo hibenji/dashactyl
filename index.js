@@ -5,31 +5,32 @@
 const settings = require("./settings.json");
 
 const defaultthemesettings = {
-  "index": "index.ejs",
-  "notfound": "index.ejs",
-  "assets": "assets",
-  "redirect": {
-      "callback": "/",
-      "logout": "/",
-      "deleteserver": "/"
+  index: "index.ejs",
+  notfound: "index.ejs",
+  redirect: {
+      callback: "/",
+      logout: "/",
+      deleteserver: "/",
+      updateservers: "/",
+      createserver: "/"
   },
-  "pages": {},
-  "mustbeloggedin": [],
-  "variables": {}
+  pages: {},
+  mustbeloggedin: [],
+  variables: {}
 };
 
 module.exports.renderdataeval =
-  `//(async () => {
+  `(async () => {
     let renderdata = {
       req: req,
       settings: settings,
       userinfo: req.session.userinfo,
+      packages: req.session.userinfo ? settings.api.client.packages.list[await db.get("package-" + req.session.userinfo.id) ? await db.get("package-" + req.session.userinfo.id) : settings.api.client.packages.default] : null,
       pterodactyl: req.session.pterodactyl,
       extra: theme.settings.variables
     };
-    renderdata;
-    //return renderdata;
-  //})();`;
+    return renderdata;
+  })();`;
 
 // Load database
 

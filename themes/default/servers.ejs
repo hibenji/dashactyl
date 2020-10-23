@@ -18,60 +18,34 @@
         <button style="margin-left: 5%; margin-top: 50px;" class="button" onclick="window.location.href = '/dashboard'">Back</button>
         <h2 style="margin-left: 5%;">Servers</h2>
         <button class="button" style="margin-left: 5%; width: 40%;" onclick="window.location.href='/servers/new'">Create a new server.</button>
-        <button class="button" style="width: 40%;" onclick="window.location.href='/login?prompt=none&redirect=servers'">Update your server list.</button>
+        <button class="button" style="width: 40%;" onclick="window.location.href='/updateinfo?redirect=servers'">Update your server list.</button>
         <br><br>
         <h3 style="margin-left: 5%;">Server List</h3>
-        <!-- Make mobile support. -->
-        <% for (let i = 0, len = pterodactyl.relationships.servers.data.length; i < len; i++) { %>
-            <div style="margin-left: 5%; width: 80%;">
-                <h2 style="float: left; margin-top: 38px; margin-left: 2%;">
-                    <%= pterodactyl.relationships.servers.data[i].attributes.name %>
-                </h2>
-                <span style="float: right; margin-top: 38px; margin-right: 2%;">
-                    <button class="button" style="background-color: #dd4c39;" onclick="window.location.href='/delete?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'">Delete</button>
-                </span>
-                <span style="float: right; margin-top: 38px; margin-right: 2%;">
-                    <h3 style="margin: 0px; color: #b3b3b3;">Disk:</h3>
-                    <span style="color: #8a939c;"><%= pterodactyl.relationships.servers.data[i].attributes.limits.disk %>MB</span>
-                </span>
-                <span style="float: right; margin-top: 38px; margin-right: 2%;">
-                    <h3 style="margin: 0px; color: #b3b3b3;">Ram:</h3>
-                    <span style="color: #8a939c;"><%= pterodactyl.relationships.servers.data[i].attributes.limits.memory %>MB</span>
-                </span>
-                <span style="float: right; margin-top: 38px; margin-right: 2%;">
-                    <h3 style="margin: 0px; color: #b3b3b3;">CPU:</h3>
-                    <span style="color: #8a939c;"><%= pterodactyl.relationships.servers.data[i].attributes.limits.cpu %>%</span>
-                </span>
-                <br><br><br><br><br><br>
-            </div>
-        <% } %>
-        <br><br><br>
-        <table style="margin-left: 5%;">
-            <tr>
-                <th style="background-color: #1f2933;"><center>Name</center></th>
-                <th style="background-color: #1f2933;"><center>RAM</center></th>
-                <th style="background-color: #1f2933;"><center>Disk</center></th>
-                <th style="background-color: #1f2933;"><center>CPU</center></th>
-                <th style="background-color: #1f2933;"><center>Delete</center></th>
-            </tr>
         <% if (pterodactyl.relationships.servers.data.length == 0) { %>
-            </table>
-            <table style="margin-left: 5%;">
-                <tr>
-                    <th><center>You do not own any servers.</center></th>
-                </tr>
-            </table>
+            <p style="margin-left: 5%;">You do not own any servers! Why not create one?</p>
         <% } else { %>
             <% for (let i = 0, len = pterodactyl.relationships.servers.data.length; i < len; i++) { %>
-                <tr>
-                    <th style="width:20%;"><center><%= pterodactyl.relationships.servers.data[i].attributes.name %></center></th>
-                    <th style="width:20%;"><center><%= pterodactyl.relationships.servers.data[i].attributes.limits.memory %>MB</center></th>
-                    <th style="width:20%;"><center><%= pterodactyl.relationships.servers.data[i].attributes.limits.disk %>MB</center></th>
-                    <th style="width:20%;"><center><%= pterodactyl.relationships.servers.data[i].attributes.limits.cpu %>%</center></th>
-                    <th style="width:20%;"><center><button class="button" style="background-color: #33404D; width: 80%" onclick="window.location.href='/delete?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'">Delete</button></center></th>
-                </tr>
+                <div style="margin-left: 5%; width: 80%; height: 150px;">
+                    <h2 style="float: left; margin-top: 38px; margin-left: 2%;">
+                        <%= pterodactyl.relationships.servers.data[i].attributes.name.length > 15 ? pterodactyl.relationships.servers.data[i].attributes.name.slice(0, 12) + "..." : pterodactyl.relationships.servers.data[i].attributes.name %>
+                    </h2>
+                    <span style="float: right; margin-top: 38px; margin-right: 2%; width: 15%;">
+                        <button class="button" style="background-color: #dd4c39; width: 100%" onclick="window.location.href='/delete?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'"><i class="fa fa-close" style="color:white;"></i></button>
+                    </span>
+                    <span style="float: right; margin-top: 38px; margin-right: 2%; width: 20%;">
+                        <h3 style="margin: 0px; color: #b3b3b3;">Disk</h3>
+                        <span style="color: #8a939c;"><%= pterodactyl.relationships.servers.data[i].attributes.limits.disk %>MB</span>
+                    </span>
+                    <span style="float: right; margin-top: 38px; margin-right: 2%; width: 20%;">
+                        <h3 style="margin: 0px; color: #b3b3b3;">Ram</h3>
+                        <span style="color: #8a939c;"><%= pterodactyl.relationships.servers.data[i].attributes.limits.memory %>MB</span>
+                    </span>
+                    <span style="float: right; margin-top: 38px; margin-right: 2%; width: 20%;">
+                        <h3 style="margin: 0px; color: #b3b3b3;">CPU</h3>
+                        <span style="color: #8a939c;"><%= pterodactyl.relationships.servers.data[i].attributes.limits.cpu %>%</span>
+                    </span>
+                </div>
             <% } %>
-            </table>
         <% } %>
     </body>
 </html>

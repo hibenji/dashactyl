@@ -7,6 +7,17 @@
         <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <title><%= extra.dashboard.title %></title>
+        <style>
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
+        padding: 16px;
+        text-align: center;
+        background-color: #3f4d5a;
+    }
+    .button:hover {
+        border-color: #33404D;
+    }
+        </style>
     </head>
     <body>
         <ul style="overflow: hidden;" class="ul">
@@ -42,6 +53,8 @@
             <input value="<%= pterodactyl.email %>" style="margin-left: 5%;" disabled>
             <h4 style="margin-left: 5%;">Username</h4>
             <input value="<%= pterodactyl.username %>" style="margin-left: 5%;" disabled>
+            <br><br><br>
+            <button class="button" style="margin-left: 5%; width: 80%; background-color: #606D7B;" onclick="window.location.replace('/updateinfo');">Update your account information.</button>
             <br><br><br><br>
         </div>
         <h2 style="margin-left: 5%;">Plan</h2>
@@ -63,31 +76,32 @@
             <div class="column" style="background-color: transparent;">
                 <div class="card">
                     <h3>RAM</h3>
-                    <p><code><%= ram %>MB</code> / <code>maxMB</code></p>
-                    <progress value="50" max="100" style="width: 100%;"></progress>
+                    <p><code><%= ram %>MB</code> / <code><%= packages.ram %>MB</code></p>
+                    <progress value="<%= ram %>" max="<%= packages.ram %>" style="width: 100%;"></progress>
                 </div>
             </div>
             <div class="column" style="background-color: transparent;">
                 <div class="card">
                     <h3>Disk</h3>
-                    <p><code><%= disk %>MB</code> / <code>maxMB</code></p>
-                    <progress value="50" max="100" style="width: 100%;"></progress>
+                    <p><code><%= disk %>MB</code> / <code><%= packages.disk %>MB</code></p>
+                    <progress value="<%= disk %>" max="<%= packages.disk %>" style="width: 100%;"></progress>
                 </div>
             </div>
             <div class="column" style="background-color: transparent;">
                 <div class="card">
                     <h3>CPU</h3>
-                    <p><code><%= cpu %>%</code> / <code>max%</code></p>
-                    <progress value="50" max="100" style="width: 100%;"></progress>
+                    <p><code><%= cpu %>%</code> / <code><%= packages.cpu %>%</code></p>
+                    <progress value="<%= cpu %>" max="<%= packages.cpu %>" style="width: 100%;"></progress>
                 </div>
             </div>
             <div class="column" style="background-color: transparent;">
                 <div class="card">
                     <h3>Servers</h3>
-                    <p><code><%= servers %> server<%= servers == 1 ? "" : "s" %></code> / <code>max servers</code></p>
-                    <progress value="50" max="100" style="width: 100%;"></progress>
+                    <p><code><%= servers %> server<%= servers == 1 ? "" : "s" %></code> / <code><%= packages.servers %> server<%= packages.ram == 1 ? "" : "s" %></code></p>
+                    <progress value="<%= servers %>" max="<%= packages.servers %>" style="width: 100%;"></progress>
                 </div>
             </div>
         </div>
+        <br><br><br>
     </body>
 </html>

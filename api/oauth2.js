@@ -24,7 +24,7 @@ const indexjs = require("../index.js")
 
 module.exports.load = async function(app, db) {
   app.get("/login", async (req, res) => {
-    if (req.query.redirect) req.session.redirect = "/" + req.query.redirect
+    if (req.query.redirect) if (typeof req.query.redirect == "string") req.session.redirect = "/" + req.query.redirect
     res.redirect(`https://discord.com/api/oauth2/authorize?client_id=${settings.api.client.oauth2.id}&redirect_uri=${encodeURIComponent(settings.api.client.oauth2.link + settings.api.client.oauth2.callbackpath)}&response_type=code&scope=identify%20email${settings.api.client.oauth2.prompt == false ? "&prompt=none" : (req.query.prompt ? (req.query.prompt == "none" ? "&prompt=none" : "") : "")}`);
   });
 
@@ -112,7 +112,7 @@ module.exports.load = async function(app, db) {
                 await db.set("users-" + userinfo.id, userid);
                 req.session.pterodactyl = user[0].attributes;
               } else {
-                return res.send("We have detected an account with your Discord email on it but the user id has already been claimed on another Discord account.")
+                return res.send("We have detected an account with your Discord email on it but the user id has already been claimed on another Discord account.");
               }
             } else {
               return res.send("An error has occured when attempting to create your account.");
@@ -126,7 +126,7 @@ module.exports.load = async function(app, db) {
               headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
             }
           );
-          if (await cacheaccount.statusText == "Not Found") return res.send("It seems like your Pterodactyl Panel account has been deleted therefore you could not be signed in.");
+          if (await cacheaccount.statusText == "Not Found") return res.send("An error has occured while attempting to get your user information.");
           let cacheaccountinfo = JSON.parse(await cacheaccount.text());
           req.session.pterodactyl = cacheaccountinfo.attributes;
         };

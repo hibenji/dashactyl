@@ -110,12 +110,9 @@ td, th {
 tr:nth-child(even) {
     background-color: #3f4d5a;
 }
-
 .select-selected {
     background-color: #606D7B;
 }
-
-/*style the items (options), including the selected item:*/
 .select-items div,.select-selected {
     color: #ffffff;
     padding: 8px 16px;
@@ -125,45 +122,29 @@ tr:nth-child(even) {
     user-select: none;
     border-radius: 5px;
 }
-
 * {
     box-sizing: border-box;
   }
-  
-  body {
+body {
     font-family: Arial, Helvetica, sans-serif;
-  }
-  
-  /* Float four columns side by side */
-  .column {
+}
+.column {
     float: left;
     width: 25%;
     padding: 0 10px;
-  }
-  
-  /* Remove extra left and right margins, due to padding in columns */
-  .row {margin: 0 -5px;}
-  
-  /* Clear floats after the columns */
-  .row:after {
+}
+.row {
+    margin: 0 -5px;
+}
+.row:after {
     content: "";
     display: table;
     clear: both;
-  }
-  
-  /* Style the counter cards */
-  .card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
-    padding: 16px;
-    text-align: center;
-    background-color: #3f4d5a;
-  }
-  
-  /* Responsive columns - one column layout (vertical) on small screens */
-  @media screen and (max-width: 600px) {
+}
+@media screen and (max-width: 600px) {
     .column {
-      width: 100%;
-      display: block;
-      margin-bottom: 20px;
+        width: 100%;
+        display: block;
+        margin-bottom: 20px;
     }
-  }
+}
