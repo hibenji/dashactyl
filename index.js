@@ -18,7 +18,8 @@ const defaultthemesettings = {
       updateservers: "/",
       createserver: "/",
       failedcreateserver: "/",
-      modifyserver: "/"
+      modifyserver: "/",
+      failedmodifyserver: "/"
   },
   pages: {},
   mustbeloggedin: [],

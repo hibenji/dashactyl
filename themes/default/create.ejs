@@ -64,30 +64,38 @@
                 <% } else if (req.query.err == "BIGSERVERNAME") { %>
                     Your server name must be less than <b>255</b> characters.
                 <% } else { %>
-                    <% if (req.query.num) if (!isNaN(parseFloat(req.query.num))) { %>
-                        <% if (req.query.err == "TOOLITTLERAM" || req.query.err == "TOOLITTLEDISK" || req.query.err == "TOOLITTLECPU") { %>
-                            You must make a server with at least <b><%= req.query.num %></b>
-                            <% if (req.query.err.slice(-3) == "RAM") { %>
-                                MB RAM
-                            <% } else if (req.query.err.slice(-4) == "DISK") { %>
-                                MB disk
-                            <% } else { // CPU %>
-                                % CPU
+                    <% if (req.query.num) { %>
+                        <% if (!isNaN(parseFloat(req.query.num))) { %>
+                            <% if (req.query.err == "TOOLITTLERAM" || req.query.err == "TOOLITTLEDISK" || req.query.err == "TOOLITTLECPU") { %>
+                                You must make a server with at least <b><%= req.query.num %></b>
+                                <% if (req.query.err.slice(-3) == "RAM") { %>
+                                    MB RAM
+                                <% } else if (req.query.err.slice(-4) == "DISK") { %>
+                                    MB disk
+                                <% } else { // CPU %>
+                                    % CPU
+                                <% } %>
+                                if you want to create a server with the server type you have selected.
+                            <% } else if (req.query.err == "TOOMUCHRAM" || req.query.err == "TOOMUCHDISK" || req.query.err == "TOOMUCHCPU") { %>
+                                With the selected server type, you can have a maximum of <b><%= req.query.num %></b>
+                                <% if (req.query.err.slice(-3) == "RAM") { %>
+                                    MB RAM
+                                <% } else if (req.query.err.slice(-4) == "DISK") { %>
+                                    MB disk
+                                <% } else { // CPU %>
+                                    % CPU
+                                <% } %>
+                                on the server.
+                            <% } else if (req.query.err == "EXCEEDRAM" || req.query.err == "EXCEEDDISK" || req.query.err == "EXCEEDCPU") { %>
+                                The server could not be created because you have requested to create a server that exceeds your plan.
+                            <% } else { %>
+                                I won't mind to add a little easter egg here. :)
                             <% } %>
-                            if you want to create a server with the server type you have selected.
-                        <% } else if (req.query.err == "TOOMUCHRAM" || req.query.err == "TOOMUCHDISK" || req.query.err == "TOOMUCHCPU") { %>
-                            With the selected server type, you can have a maximum of <b><%= req.query.num %></b>
-                            <% if (req.query.err.slice(-3) == "RAM") { %>
-                                MB RAM
-                            <% } else if (req.query.err.slice(-4) == "DISK") { %>
-                                MB disk
-                            <% } else { // CPU %>
-                                % CPU
-                            <% } %>
-                            on the server.
-                        <% } else if (req.query.err == "EXCEEDRAM" || req.query.err == "EXCEEDDISK" || req.query.err == "EXCEEDCPU") { %>
-                            The server could not be created because you have requested to create a server that exceeds your plan.
+                        <% } else { %>
+                            I won't mind to add a little easter egg here. :)
                         <% } %>
+                    <% } else { %>
+                        I won't mind to add a little easter egg here. :)
                     <% } %>
                 <% } %>
             </div>
@@ -130,7 +138,7 @@
                 let ram = document.getElementById("ram").value;
                 let disk = document.getElementById("disk").value;
                 let cpu = document.getElementById("cpu").value;
-                document.location.replace(`/create?name=${name}&egg=${egg}&ram=${ram}&disk=${disk}&cpu=${cpu}`);
+                document.location.href = `/create?name=${name}&egg=${egg}&ram=${ram}&disk=${disk}&cpu=${cpu}`;
             };
         </script>
     </body>

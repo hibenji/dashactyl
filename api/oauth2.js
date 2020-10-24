@@ -24,7 +24,7 @@ const indexjs = require("../index.js")
 
 module.exports.load = async function(app, db) {
   app.get("/login", async (req, res) => {
-    if (req.query.redirect) if (typeof req.query.redirect == "string") req.session.redirect = "/" + req.query.redirect
+    if (req.query.redirect) req.session.redirect = "/" + req.query.redirect
     res.redirect(`https://discord.com/api/oauth2/authorize?client_id=${settings.api.client.oauth2.id}&redirect_uri=${encodeURIComponent(settings.api.client.oauth2.link + settings.api.client.oauth2.callbackpath)}&response_type=code&scope=identify%20email${settings.api.client.oauth2.prompt == false ? "&prompt=none" : (req.query.prompt ? (req.query.prompt == "none" ? "&prompt=none" : "") : "")}`);
   });
 
