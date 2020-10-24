@@ -30,6 +30,7 @@
                         <%= pterodactyl.relationships.servers.data[i].attributes.name.length > 15 ? pterodactyl.relationships.servers.data[i].attributes.name.slice(0, 12) + "..." : pterodactyl.relationships.servers.data[i].attributes.name %>
                     </h2>
                     <span style="float: right; margin-top: 38px; margin-right: 2%; width: 15%;">
+                        <button class="button" style="background-color: #606D7B; width: 100%" onclick="window.location.href='/servers/edit?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'"><i class="fa fa-gear" style="color:white;"></i></button>
                         <button class="button" style="background-color: #dd4c39; width: 100%" onclick="window.location.href='/delete?id=<%= pterodactyl.relationships.servers.data[i].attributes.id %>'"><i class="fa fa-close" style="color:white;"></i></button>
                     </span>
                     <span style="float: right; margin-top: 38px; margin-right: 2%; width: 20%;">
@@ -47,5 +48,6 @@
                 </div>
             <% } %>
         <% } %>
+        <br><br>
     </body>
 </html>

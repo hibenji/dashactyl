@@ -21,6 +21,7 @@
                 "/callback": 2,
                 "/create": 1,
                 "/delete": 1,
+                "/modify": 1,
                 "/updateinfo": 1
             },
             "packages": {
@@ -39,12 +40,12 @@
                     "minimum": {
                         "ram": 512,
                         "disk": 512,
-                        "cpu": 50
+                        "cpu": 75
                     },
                     "maximum": {
-                        "ram": 1024,
-                        "disk": 1024,
-                        "cpu": 90
+                        "ram": null,
+                        "disk": null,
+                        "cpu": null
                     },
                     "info": {
                         "egg": 3,
@@ -57,11 +58,6 @@
                         "feature_limits": {
                             "databases": 1,
                             "backups": 1
-                        },
-                        "deploy": {
-                            "locations": [],
-                            "dedicated_ip": false,
-                            "port_range": []
                         }
                     }
                 }

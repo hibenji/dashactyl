@@ -1,5 +1,9 @@
 "use strict";
 
+// Load packages.
+
+const fs = require("fs");
+
 // Load settings.
 
 const settings = require("./settings.json");
@@ -12,7 +16,9 @@ const defaultthemesettings = {
       logout: "/",
       deleteserver: "/",
       updateservers: "/",
-      createserver: "/"
+      createserver: "/",
+      failedcreateserver: "/",
+      modifyserver: "/"
   },
   pages: {},
   mustbeloggedin: [],
@@ -23,7 +29,7 @@ module.exports.renderdataeval =
   `(async () => {
     let renderdata = {
       req: req,
-      settings: settings,
+      settings: JSON.parse(require("fs").readFileSync("./settings.json")),
       userinfo: req.session.userinfo,
       packages: req.session.userinfo ? settings.api.client.packages.list[await db.get("package-" + req.session.userinfo.id) ? await db.get("package-" + req.session.userinfo.id) : settings.api.client.packages.default] : null,
       pterodactyl: req.session.pterodactyl,
@@ -42,10 +48,6 @@ db.on('error', err => {
 });
 
 module.exports.db = db;
-
-// Load packages.
-
-const fs = require("fs");
 
 // Load websites.
 

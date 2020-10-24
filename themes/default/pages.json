@@ -7,17 +7,20 @@
         "deleteserver": "/servers",
         "updateservers": "/dashboard",
         "createserver": "/servers",
-        "failedcreateserver": "/servers/new"
+        "failedcreateserver": "/servers/new",
+        "modifyserver": "/servers"
     },
     "pages": {
         "dashboard": "dashboard.ejs",
         "servers": "servers.ejs",
-        "servers/new": "newserver.ejs"
+        "servers/new": "create.ejs",
+        "servers/edit": "edit.ejs"
     },
     "mustbeloggedin": [
         "/dashboard",
         "/servers",
-        "/servers/new"
+        "/servers/new",
+        "/servers/edit"
     ],
     "variables": {
         "faviconlink": "",
@@ -43,7 +46,8 @@
         "servers": {
             "title": {
                 "list": "Dashactyl - Servers",
-                "create": "Dashactyl - Create Server"
+                "create": "Dashactyl - Create Server",
+                "modify": "Dashactyl - Modify Server"
             }
         }
     }

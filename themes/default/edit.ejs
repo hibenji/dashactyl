@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <link rel="icon" type="image/png" href="<%= extra.faviconlink %>"/>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link href="/assets/default/style.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <title><%= extra.servers.title.modify %></title>
+        <% if (req.query.err) { %>
+            <style>
+                .alert {
+                  padding: 20px;
+                  background-color: #606D7B;
+                  color: white;
+                  opacity: 1;
+                  transition: opacity 0.6s;
+                  margin-bottom: 15px;
+                  margin-left: 5%;
+                  width: 80%;
+                }
+                
+                .alert.success {background-color: #4CAF50;}
+                .alert.info {background-color: #2196F3;}
+                .alert.warning {background-color: #ff9800;}
+                
+                .closebtn {
+                  margin-left: 15px;
+                  color: white;
+                  font-weight: bold;
+                  float: right;
+                  font-size: 22px;
+                  line-height: 20px;
+                  cursor: pointer;
+                  transition: 0.3s;
+                }
+                
+                .closebtn:hover {
+                  color: black;
+                }
+                </style>
+        <% } %>
+    </head>
+    <body>
+        <ul style="overflow: hidden;" class="ul">
+            <li style="float:left; margin-top: 12px; margin-left: 10%;"><a href="/" style="font-family: 'Rubik', sans-serif; font-size: 25px"><%= extra.home.name %></a></li>
+            <li style="float:right; margin-right: 20%" class="li">
+                <a href="<%= userinfo ? "/logout" : "/login" %>"><i class="fa fa-<%= userinfo ? "sign-out": "fw fa-user" %>" style="color: gray; margin-top: 10px;"></i></a>
+            </li>
+        </ul>
+        <button style="margin-left: 5%; margin-top: 50px;" class="button" onclick="window.location.href = '/dashboard'">Back</button>
+        <h2 style="margin-left: 5%;">Servers</h2>
+        <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.replace('/servers')">Server List</button>
+        <br><br>
+        <% if (req.query.id) { %>
+            <% if (pterodactyl.relationships.servers.data.filter(name => name.attributes.id == req.query.id).length == 1) {
+                let serverinfo = pterodactyl.relationships.servers.data.filter(name => name.attributes.id == req.query.id)[0];
+                let attemptegg = null;
+                let attemptname = null;
+                for (let [name, value] of Object.entries(settings.api.client.eggs)) {
+                    if (settings.api.client.eggs[name].info.egg == serverinfo.attributes.egg) {
+                        attemptegg = settings.api.client.eggs[name];
+                        attemptname = name;
+                    };
+                };
+                let egginfo = attemptegg ? attemptegg.display : "???";
+            %>
+                <div style="width: 80%; margin-left: 5%;"><br>
+                    <h3 style="margin-left: 5%;">Modify a Server</h3>
+                    <p style="margin-left: 5%;">Name: <input id="name" value="<%= serverinfo.attributes.name %>" disabled></p>
+                    <p style="margin-left: 5%;">Egg:&nbsp;&nbsp;&nbsp;&nbsp;<select class="select-selected" id="egg" disabled>
+                        <option><%= egginfo %></option>
+                    </select></p>
+                    <p style="margin-left: 5%;">RAM:&nbsp;&nbsp;&nbsp;<input id="ram"></p>
+                    <p style="margin-left: 5%;">Disk:&nbsp;&nbsp;&nbsp;<input id="disk"></p>
+                    <p style="margin-left: 5%;">CPU:&nbsp;&nbsp;&nbsp;<input id="cpu"></p>
+                    <center>
+                        <button onclick="submitForm()" class="button" style="background-color: #33404D;">Modify</button>
+                    </center>
+                    <br>
+                </div>
+                <script>
+                    async function submitForm() {
+                        let name = encodeURIComponent(document.getElementById("name").value);
+                        let egg = document.getElementById("egg").value;
+                        let ram = document.getElementById("ram").value;
+                        let disk = document.getElementById("disk").value;
+                        let cpu = document.getElementById("cpu").value;
+                        document.location.replace(`/modify?id=<%= req.query.id %>&ram=${ram}&disk=${disk}&cpu=${cpu}`);
+                    };
+                </script>
+            <% } else { %>
+                <p style="margin-left: 5%;">Could not find server with the provided ID.</p>
+            <% } %>
+        <% } else { %>
+            <p style="margin-left: 5%;">Missing server ID.</p>
+        <% } %>
+    </body>
+</html>
