@@ -88,11 +88,11 @@ module.exports.load = async function(app, db) {
             userids.push(accountinfo.attributes.id);
             await db.set("users", userids);
             await db.set("users-" + userinfo.id, accountinfo.attributes.id);
-            req.session.pterodactyl = accountinfo.attributes;
             req.session.newaccount = true;
+            return res.redirect("/login?prompt=true");
           } else {
             let accountlistjson = await fetch(
-              settings.pterodactyl.domain + "/api/application/users",
+              settings.pterodactyl.domain + "/api/application/users?include=servers",
               {
                 method: "get",
                 headers: {
