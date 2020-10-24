@@ -1,4 +1,5 @@
 {
+    "version": "0.1.0",
     "website": {
         "port": 80,
         "secret": "change this website session secret password"
