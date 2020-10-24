@@ -11,16 +11,7 @@ const settings = require("./settings.json");
 const defaultthemesettings = {
   index: "index.ejs",
   notfound: "index.ejs",
-  redirect: {
-      callback: "/",
-      logout: "/",
-      deleteserver: "/",
-      updateservers: "/",
-      createserver: "/",
-      failedcreateserver: "/",
-      modifyserver: "/",
-      failedmodifyserver: "/"
-  },
+  redirect: {},
   pages: {},
   mustbeloggedin: [],
   variables: {}
