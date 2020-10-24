@@ -5,7 +5,7 @@
     },
     "pterodactyl": {
         "domain": "pterodactyl panel domain",
-        "key": "pterodactyl panel api key"
+        "key": "pterodactyl panel admin api key"
     },
     "database": "sqlite://database.sqlite",
     "api": {
@@ -22,7 +22,8 @@
                 "/create": 1,
                 "/delete": 1,
                 "/modify": 1,
-                "/updateinfo": 1
+                "/updateinfo": 1,
+                "/setplan": 2
             },
             "packages": {
                 "default": "default",
@@ -55,6 +56,32 @@
                         "environment": {
                             "SERVER_JARFILE": "server.jar",
                             "BUILD_NUMBER": "latest"
+                        },
+                        "feature_limits": {
+                            "databases": 1,
+                            "backups": 1
+                        }
+                    }
+                },
+                "bungeecord": {
+                    "display": "Bungeecord",
+                    "minimum": {
+                        "ram": 512,
+                        "disk": 512,
+                        "cpu": 75
+                    },
+                    "maximum": {
+                        "ram": null,
+                        "disk": null,
+                        "cpu": null
+                    },
+                    "info": {
+                        "egg": 1,
+                        "docker_image": "quay.io/pterodactyl/core:java",
+                        "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+                        "environment": {
+                            "SERVER_JARFILE": "bungeecord.jar",
+                            "BUNGEE_VERSION": "latest"
                         },
                         "feature_limits": {
                             "databases": 1,

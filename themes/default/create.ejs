@@ -7,39 +7,6 @@
         <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <title><%= extra.servers.title.create %></title>
-        <% if (req.query.err) { %>
-            <style>
-                .alert {
-                  padding: 20px;
-                  background-color: #606D7B;
-                  color: white;
-                  opacity: 1;
-                  transition: opacity 0.6s;
-                  margin-bottom: 15px;
-                  margin-left: 5%;
-                  width: 80%;
-                }
-                
-                .alert.success {background-color: #4CAF50;}
-                .alert.info {background-color: #2196F3;}
-                .alert.warning {background-color: #ff9800;}
-                
-                .closebtn {
-                  margin-left: 15px;
-                  color: white;
-                  font-weight: bold;
-                  float: right;
-                  font-size: 22px;
-                  line-height: 20px;
-                  cursor: pointer;
-                  transition: 0.3s;
-                }
-                
-                .closebtn:hover {
-                  color: black;
-                }
-                </style>
-        <% } %>
     </head>
     <body>
         <ul style="overflow: hidden;" class="ul">
@@ -134,10 +101,10 @@
         <script>
             async function submitForm() {
                 let name = encodeURIComponent(document.getElementById("name").value);
-                let egg = document.getElementById("egg").value;
-                let ram = document.getElementById("ram").value;
-                let disk = document.getElementById("disk").value;
-                let cpu = document.getElementById("cpu").value;
+                let egg = encodeURIComponent(document.getElementById("egg").value);
+                let ram = encodeURIComponent(document.getElementById("ram").value);
+                let disk = encodeURIComponent(document.getElementById("disk").value);
+                let cpu = encodeURIComponent(document.getElementById("cpu").value);
                 document.location.href = `/create?name=${name}&egg=${egg}&ram=${ram}&disk=${disk}&cpu=${cpu}`;
             };
         </script>

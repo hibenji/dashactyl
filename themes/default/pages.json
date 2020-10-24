@@ -9,19 +9,25 @@
         "createserver": "/servers",
         "failedcreateserver": "/servers/new",
         "modifyserver": "/servers",
-        "failedmodifyserver": "/servers/edit"
+        "failedmodifyserver": "/servers/edit",
+        "setplan": "/admin",
+        "failedsetplan": "/admin"
     },
     "pages": {
         "dashboard": "dashboard.ejs",
         "servers": "servers.ejs",
         "servers/new": "create.ejs",
-        "servers/edit": "edit.ejs"
+        "servers/edit": "edit.ejs",
+        "admin": "admin.ejs"
     },
     "mustbeloggedin": [
         "/dashboard",
         "/servers",
         "/servers/new",
         "/servers/edit"
+    ],
+    "mustbeadmin": [
+        "/admin"
     ],
     "variables": {
         "faviconlink": "",
@@ -49,6 +55,14 @@
                 "list": "Dashactyl - Servers",
                 "create": "Dashactyl - Create Server",
                 "modify": "Dashactyl - Modify Server"
+            }
+        },
+        "error": {
+            "title": "Dashactyl - 404"
+        },
+        "admin": {
+            "title": {
+                "default": "Dashactyl - Admin"
             }
         }
     }

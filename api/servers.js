@@ -17,7 +17,7 @@ module.exports.load = async function(app, db) {
         headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
       }
     );
-    if (await cacheaccount.statusText == "Not Found") return res.send("An error has occured while attempting to update your server list.");
+    if (await cacheaccount.statusText == "Not Found") return res.send("An error has occured while attempting to update your account information and server list.");
     let cacheaccountinfo = JSON.parse(await cacheaccount.text());
     req.session.pterodactyl = cacheaccountinfo.attributes;
     if (req.query.redirect) if (typeof req.query.redirect == "string") return res.redirect("/" + req.query.redirect);
@@ -43,7 +43,7 @@ module.exports.load = async function(app, db) {
 
       let egg = req.query.egg;
 
-      let newsettings = JSON.parse(fs.readFileSync("./settings.json"));
+      let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
 
       let egginfo = newsettings.api.client.eggs[egg];
       if (!newsettings.api.client.eggs[egg]) return res.redirect(`${redirectlink}?err=INVALIDEGG`);
@@ -129,7 +129,8 @@ module.exports.load = async function(app, db) {
     let cpu = req.query.cpu ? (isNaN(parseFloat(req.query.cpu)) ? undefined : parseFloat(req.query.cpu)) : undefined;
 
     if (ram || disk || cpu) {
-      let newsettings = JSON.parse(fs.readFileSync("./settings.json"));
+      let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
+
       let packagename = await db.get("package-" + req.session.userinfo.id);
       let package = newsettings.api.client.packages.list[packagename ? packagename : newsettings.api.client.packages.default];
 
@@ -145,8 +146,9 @@ module.exports.load = async function(app, db) {
       }
       let attemptegg = null;
       let attemptname = null;
-      for (let [name, value] of Object.entries(settings.api.client.eggs)) {
-        if (newsettings.api.client.eggs[name].info.egg == checkexist[0].attributes.egg) {
+      
+      for (let [name, value] of Object.entries(newsettings.api.client.eggs)) {
+        if (value.info.egg == checkexist[0].attributes.egg) {
           attemptegg = newsettings.api.client.eggs[name];
           attemptname = name;
         };

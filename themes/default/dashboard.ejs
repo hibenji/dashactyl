@@ -58,7 +58,12 @@
             <br><br><br><br>
         </div>
         <h2 style="margin-left: 5%;">Plan</h2>
-        <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.href='/servers'">View your servers.</button>
+        <% if (pterodactyl.root_admin == true) { %>
+            <button class="button" style="margin-left: 5%; width: 40%;" onclick="window.location.href='/servers'">View your servers.</button>
+            <button class="button" style="width: 40%;" onclick="window.location.href = '/admin';">Administrator Settings</button>
+        <% } else { %>
+            <button class="button" style="margin-left: 5%; width: 80%;" onclick="window.location.href='/servers'">View your servers.</button>
+        <% } %>
         <br><br>
         <%
             let ram = 0;

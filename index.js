@@ -28,11 +28,12 @@ const defaultthemesettings = {
 
 module.exports.renderdataeval =
   `(async () => {
+    let newsettings = JSON.parse(require("fs").readFileSync("./settings.json"));
     let renderdata = {
       req: req,
-      settings: JSON.parse(require("fs").readFileSync("./settings.json")),
+      settings: newsettings,
       userinfo: req.session.userinfo,
-      packages: req.session.userinfo ? settings.api.client.packages.list[await db.get("package-" + req.session.userinfo.id) ? await db.get("package-" + req.session.userinfo.id) : settings.api.client.packages.default] : null,
+      packages: req.session.userinfo ? newsettings.api.client.packages.list[await db.get("package-" + req.session.userinfo.id) ? await db.get("package-" + req.session.userinfo.id) : newsettings.api.client.packages.default] : null,
       pterodactyl: req.session.pterodactyl,
       extra: theme.settings.variables
     };
@@ -112,6 +113,22 @@ app.get("*", async (req, res) => {
   if (req.session.pterodactyl) if (req.session.pterodactyl.id !== await db.get("users-" + req.session.userinfo.id)) return res.redirect("/login?prompt=none");
   let theme = indexjs.get(req);
   if (theme.settings.mustbeloggedin.includes(req._parsedUrl.pathname)) if (!req.session.userinfo || !req.session.pterodactyl) return res.redirect("/login" + (req._parsedUrl.pathname.slice(0, 1) == "/" ? "?redirect=" + req._parsedUrl.pathname.slice(1) : ""));
+  if (theme.settings.mustbeadmin.includes(req._parsedUrl.pathname)) if (!req.session.userinfo || !req.session.pterodactyl) {
+    ejs.renderFile(
+        `./themes/${theme.name}/${theme.settings.notfound}`, 
+        await eval(indexjs.renderdataeval),
+        null,
+    function (err, str) {
+        delete req.session.newaccount;
+        if (err) {
+            console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
+            console.log(err);
+            return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
+        };
+        res.send(str);
+    });
+    return;
+  }
   ejs.renderFile(
     `./themes/${theme.name}/${theme.settings.pages[req._parsedUrl.pathname.slice(1)] ? theme.settings.pages[req._parsedUrl.pathname.slice(1)] : theme.settings.notfound}`, 
     await eval(indexjs.renderdataeval),
@@ -121,7 +138,7 @@ app.get("*", async (req, res) => {
     if (err) {
       console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
       console.log(err);
-      return res.send("404");
+      return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
     };
     res.send(str);
   });

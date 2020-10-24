@@ -16,7 +16,7 @@ module.exports.load = async function(app, db) {
       if (err) {
         console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
         console.log(err);
-        return res.send("404");
+        return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
       };
       delete req.session.newaccount;
       res.send(str);
