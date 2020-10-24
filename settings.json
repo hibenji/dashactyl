@@ -1,21 +1,21 @@
 {
     "website": {
         "port": 80,
-        "secret": "session secret password"
+        "secret": "change this website session secret password"
     },
     "pterodactyl": {
-        "domain": "pterodactyl panel domain link",
-        "key": "pterodactyl admin api code"
+        "domain": "pterodactyl panel domain",
+        "key": "pterodactyl panel api key"
     },
     "database": "sqlite://database.sqlite",
-    "addons": {
+    "api": {
         "client": {
             "oauth2": {
-                "id": "discord application id",
-                "secret": "discord application secret",
-                "link": "website link",
-                "callbackpath": "callback path",
-                "prompt": false
+                "id": "discord oauth2 application id",
+                "secret": "discord oauth2 application secret",
+                "link": "discord oauth2 application link",
+                "callbackpath": "/callback",
+                "prompt": true
             },
             "ratelimits": {
                 "/callback": 2,
@@ -37,6 +37,7 @@
             },
             "eggs": {
                 "paper": {
+                    "display": "Paper",
                     "minimum": {
                         "ram": 1024,
                         "disk": 1024,
