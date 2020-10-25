@@ -1,4 +1,4 @@
 newsettings.version = "0.1.2";
-fs.writeFile(`./settings.json`, JSON.stringify(newsettings), function(err) {
+fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), function(err) {
 if (err) throw err;
 });
