@@ -1,5 +1,6 @@
 {
     "version": "0.1.0-fix1",
+    "defaulttheme": "default",
     "website": {
         "port": 80,
         "secret": "change this website session secret password"
