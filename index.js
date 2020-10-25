@@ -9,12 +9,13 @@ const fs = require("fs");
 const settings = require("./settings.json");
 
 const defaultthemesettings = {
-  index: "index.ejs",
-  notfound: "index.ejs",
-  redirect: {},
-  pages: {},
-  mustbeloggedin: [],
-  variables: {}
+  "index": "index.ejs",
+  "notfound": "index.ejs",
+  "redirect": {},
+  "pages": {},
+  "mustbeloggedin": [],
+  "mustbeadmin": [],
+  "variables": {}
 };
 
 module.exports.renderdataeval =

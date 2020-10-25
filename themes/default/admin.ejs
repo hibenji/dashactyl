@@ -47,6 +47,23 @@
             </script>
         <% } %>
         <br><br>
+        <h4 style="margin-left: 5%;">Version</h4>
+        <p id="latestversion"><span style="margin-left: 5%;">Fetching...</span></p>
+        <script>
+            fetch("https://real2two.github.io/dashactyl/version")
+                .then(res => Promise.resolve(res.json()).then(ver => {
+                    let currentver = "<%= settings.version.replace(/"/g, `\\\\"`) %>";
+                    if (ver.version == currentver) {
+                        document.getElementById("latestversion").innerHTML = `<span style="margin-left: 5%;">You are running Dashactyl version <code>${currentver}</code>. Your dashboard is up-to-date!</span>`;
+                    } else {
+                        document.getElementById("latestversion").innerHTML = `<span style="margin-left: 5%;">Your dashboard is <b>not up-to-date!</b> The latest version is <code>${ver.version}</code> and you are currently running version <code><%= settings.version %></code>.</span>
+                            <br><br><span style="margin-left: 5%;">Keep in mind the dashboard will shutdown when you click the "UPDATE" button unless you made the dashboard automatically restart.</span>
+                            <br><br>
+                            <button onclick="window.location.href = '/update'" class="button" style="margin-left: 5%;">Update</button>`;
+                    };
+                }));
+        </script>
+        <br><br>
         <h4 style="margin-left: 5%;">Change someone's package.</h4>
         <p style="margin-left: 5%;">Discord User ID: <input id="id"></p>
         <p style="margin-left: 5%;">Package: <select class="select-selected" id="package">

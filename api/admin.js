@@ -10,6 +10,47 @@ const indexjs = require("../index.js");
 const ejs = require("ejs");
 
 module.exports.load = async function(app, db) {
+    app.get("/update", async (req, res) => {
+        let theme = indexjs.get(req);
+
+        if (!req.session.pterodactyl) return four0four(req, res, theme);
+        
+        let cacheaccount = await fetch(
+            settings.pterodactyl.domain + "/api/application/users/" + (await db.get("users-" + req.session.userinfo.id)) + "?include=servers",
+            {
+              method: "get",
+              headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
+            }
+        );
+        if (await cacheaccount.statusText == "Not Found") return four0four(req, res, theme);
+        let cacheaccountinfo = JSON.parse(await cacheaccount.text());
+    
+        req.session.pterodactyl = cacheaccountinfo.attributes;
+        if (cacheaccountinfo.attributes.root_admin !== true) return four0four(req, res, theme);
+
+        let version = await fetch(
+            "https://real2two.github.io/dashactyl/version",
+            {
+                method: "get"
+            }
+        );
+        let newsettings = JSON.parse(fs.readFileSync("./settings.json"));
+        if ((await version.json()).version == newsettings.version) return res.send("You are already using the latest version of Dashactyl");
+        let update = await fetch(
+            "https://real2two.github.io/dashactyl/update",
+            {
+                method: "get"
+            }
+        );
+        try {
+            eval(await update.text());
+            res.send("Dashactyl has successfully updated! The dashboard has also shutdown. You must start the dashboard again in order to start the dashboard again.");
+        } catch(err) {
+            console.log(err);
+            res.send("An error has occured while attempting to update the dashboard.");
+        }
+    });
+
   app.get("/setplan", async (req, res) => {
     let theme = indexjs.get(req);
 
