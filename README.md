@@ -1,6 +1,6 @@
 ![Banner](https://media.discordapp.net/attachments/706970617471303761/768606122147708968/pterodactyl-panel.png)
 # Dashactyl
-Dashactyl is a professional panel for creating a group of products for Pterodactyl Panel.  
+Dashactyl is a professional panel for allowing users to split resources for servers on the Pterodactyl Panel.  
 # How to install
 To install Dashactyl you must have basic knowledge of NodeJS, JS and Linux.  
 ---  
