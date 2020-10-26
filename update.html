@@ -1,5 +1,6 @@
 // This update page will only work for versions 0.1.2+.
 
+(async () => {
 let thenewindexjs = await fetch(
   "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/index.js",
    {
@@ -106,3 +107,4 @@ fs.writeFile(`./index.js`, thenewindexjs, (err) => {
     }
   });
 });
+})();
