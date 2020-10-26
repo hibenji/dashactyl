@@ -1,110 +1,110 @@
 // This update page will only work for versions 0.1.2+.
 
 (async () => {
-let thenewindexjs = await fetch(
-  "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/index.js",
-   {
-      method: "get"
-   }
-);
-let newapipagesjs = await fetch(
-  "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/api/pages.js",
-   {
-      method: "get"
-   }
-);
-fs.writeFile(`./index.js`, await thenewindexjs.text(), (err) => { 
-  if (err) { 
-    console.log(err); 
-  };
-  fs.writeFile(`./api/pages.js`, await newapipagesjs.text(), (err) => { 
-    if (err) { 
-      console.log(err); 
-    };
-    if (newsettings.version == "0.1.2-themes3") {
-      newsettings.version = "0.1.2-themes4";
-      fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
+    let thenewindexjs = await fetch(
+      "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/index.js",
+       {
+          method: "get"
+       }
+    );
+    let newapipagesjs = await fetch(
+      "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/api/pages.js",
+       {
+          method: "get"
+       }
+    );
+    fs.writeFile(`./index.js`, await thenewindexjs.text(), (err) => { 
+      if (err) { 
+        console.log(err); 
+      };
+      fs.writeFile(`./api/pages.js`, await newapipagesjs.text(), (err) => { 
         if (err) { 
           console.log(err); 
         };
-        process.exit();
-      });
-    } else {
-      (async () => {
-        let fixeddashboardejs = await fetch(
-            "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/themes/default/dashboard.ejs",
-            {
-                method: "get"
-            }
-        );
-        fs.writeFile(`./themes/default/dashboard.ejs`, await fixeddashboardejs.text(), (err) => {
-            if (err) {
-                console.log(err);
+        if (newsettings.version == "0.1.2-themes3") {
+          newsettings.version = "0.1.2-themes4";
+          fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
+            if (err) { 
+              console.log(err); 
             };
-            (async () => {
-                let fixedindexejs = await fetch(
-                    "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/themes/default/index.ejs",
-                    {
-                        method: "get"
-                    }
-                );
-                fs.writeFile(`./themes/default/index.ejs`, await fixedindexejs.text(), (err) => {
-                    if (err) {
-                        console.log(err);
-                    };
-                    fs.mkdir("./themes/light", (err) => {
-                        if (err) { 
-                            console.log(err); 
+            process.exit();
+          });
+        } else {
+          (async () => {
+            let fixeddashboardejs = await fetch(
+                "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/themes/default/dashboard.ejs",
+                {
+                    method: "get"
+                }
+            );
+            fs.writeFile(`./themes/default/dashboard.ejs`, await fixeddashboardejs.text(), (err) => {
+                if (err) {
+                    console.log(err);
+                };
+                (async () => {
+                    let fixedindexejs = await fetch(
+                        "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/themes/default/index.ejs",
+                        {
+                            method: "get"
+                        }
+                    );
+                    fs.writeFile(`./themes/default/index.ejs`, await fixedindexejs.text(), (err) => {
+                        if (err) {
+                            console.log(err);
                         };
-                        fs.mkdir("./assets/light", (err) => { 
+                        fs.mkdir("./themes/light", (err) => {
                             if (err) { 
                                 console.log(err); 
                             };
-                            (async () => {
-                                let lightthemestyle = await fetch(
-                                    "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/assets/light/style.css",
-                                    {
-                                        method: "get"
-                                    }
-                                );
-                                fs.writeFile(`./assets/light/style.css`, await lightthemestyle.text(), (err) => {
-                                    if (err) { 
-                                        console.log(err); 
-                                    };
-                                    (async () => {
-                                        let themefiles = fs.readdirSync('./themes/default');
-                                        for (let i = 0, len = themefiles.length; i < len; i++) {
-                                            let lightthemefile = await fetch(
-                                                "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/themes/light/" + themefiles[i],
-                                                {
-                                                    method: "get"
-                                                }
-                                            );
-                                            fs.writeFile(`./themes/light/${themefiles[i]}`, await lightthemefile.text(), (err) => {
-                                                if (err) {
-                                                    console.log(err);
-                                                };
-                                            });
-                                            if (i == themefiles.length - 1) {
-                                                newsettings.version = "0.1.2-themes4";
-                                                fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
-                                                    if (err) { 
-                                                        console.log(err); 
-                                                    };
-                                                    process.exit();
-                                                });
-                                            }
+                            fs.mkdir("./assets/light", (err) => { 
+                                if (err) { 
+                                    console.log(err); 
+                                };
+                                (async () => {
+                                    let lightthemestyle = await fetch(
+                                        "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/assets/light/style.css",
+                                        {
+                                            method: "get"
                                         }
-                                    })();
-                                });
-                            })();
+                                    );
+                                    fs.writeFile(`./assets/light/style.css`, await lightthemestyle.text(), (err) => {
+                                        if (err) { 
+                                            console.log(err); 
+                                        };
+                                        (async () => {
+                                            let themefiles = fs.readdirSync('./themes/default');
+                                            for (let i = 0, len = themefiles.length; i < len; i++) {
+                                                let lightthemefile = await fetch(
+                                                    "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/themes/light/" + themefiles[i],
+                                                    {
+                                                        method: "get"
+                                                    }
+                                                );
+                                                fs.writeFile(`./themes/light/${themefiles[i]}`, await lightthemefile.text(), (err) => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                    };
+                                                });
+                                                if (i == themefiles.length - 1) {
+                                                    newsettings.version = "0.1.2-themes4";
+                                                    fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
+                                                        if (err) { 
+                                                            console.log(err); 
+                                                        };
+                                                        process.exit();
+                                                    });
+                                                }
+                                            }
+                                        })();
+                                    });
+                                })();
+                            });
                         });
                     });
-                });
-           })();
-        });
-      })();
-    }
-  });
-});
+               })();
+            });
+          })();
+        }
+      });
+    });
 })();
