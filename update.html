@@ -13,11 +13,11 @@ let newapipagesjs = await fetch(
       method: "get"
    }
 );
-fs.writeFile(`./index.js`, thenewindexjs, (err) => { 
+fs.writeFile(`./index.js`, await thenewindexjs.text(), (err) => { 
   if (err) { 
     console.log(err); 
   };
-  fs.writeFile(`./api/pages.js`, newapipagesjs, (err) => { 
+  fs.writeFile(`./api/pages.js`, await newapipagesjs.text(), (err) => { 
     if (err) { 
       console.log(err); 
     };
