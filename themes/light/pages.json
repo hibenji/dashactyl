@@ -1,0 +1,69 @@
+{
+    "index": "index.ejs",
+    "notfound": "404.ejs",
+    "redirect": {
+        "callback": "/dashboard",
+        "logout": "/",
+        "deleteserver": "/servers",
+        "updateservers": "/dashboard",
+        "createserver": "/servers",
+        "failedcreateserver": "/servers/new",
+        "modifyserver": "/servers",
+        "failedmodifyserver": "/servers/edit",
+        "setplan": "/admin",
+        "failedsetplan": "/admin"
+    },
+    "pages": {
+        "dashboard": "dashboard.ejs",
+        "servers": "servers.ejs",
+        "servers/new": "create.ejs",
+        "servers/edit": "edit.ejs",
+        "admin": "admin.ejs"
+    },
+    "mustbeloggedin": [
+        "/dashboard",
+        "/servers",
+        "/servers/new",
+        "/servers/edit"
+    ],
+    "mustbeadmin": [
+        "/admin"
+    ],
+    "variables": {
+        "faviconlink": "https://camo.githubusercontent.com/d2e9b4ddcf7618efa123961ae270f7eaa83362f8/68747470733a2f2f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f3730363937303631373437313330333736312f3736383630363132323134373730383936382f707465726f64616374796c2d70616e656c2e706e67",
+        "home": {
+            "title": "Dashactyl - Home",
+            "name": "Dashactyl",
+            "topmsg": "Dashactyl",
+            "bottommsg": "An dashboard addition to the Pterodactyl Panel.",
+            "buttontext": {
+                "loggedin": {
+                    "text": "Dashboard",
+                    "link": "/dashboard"
+                },
+                "loggedout": {
+                    "text": "Login",
+                    "link": "/login"
+                }
+            }
+        },
+        "dashboard": {
+            "title": "Dashactyl - Dashboard"
+        },
+        "servers": {
+            "title": {
+                "list": "Dashactyl - Servers",
+                "create": "Dashactyl - Create Server",
+                "modify": "Dashactyl - Modify Server"
+            }
+        },
+        "error": {
+            "title": "Dashactyl - 404"
+        },
+        "admin": {
+            "title": {
+                "default": "Dashactyl - Admin"
+            }
+        }
+    }
+}
