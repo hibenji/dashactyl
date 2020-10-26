@@ -72,8 +72,7 @@ module.exports.load = async function(app, db) {
               method: "post",
               headers: {
                 'Content-Type': 'application/json',
-                "Authorization": `Bearer ${settings.pterodactyl.key}`,
-                "Accept": "application/json"
+                "Authorization": `Bearer ${settings.pterodactyl.key}`
               },
               body: JSON.stringify({
                 username: userinfo.id,
