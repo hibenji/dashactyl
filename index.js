@@ -138,7 +138,7 @@ app.get("*", async (req, res) => {
 
 module.exports.get = function get(req) {
   let defaulttheme = JSON.parse(fs.readFileSync("./settings.json")).defaulttheme;
-  let tname = getCookie(req, "theme");
+  let tname = encodeURIComponent(getCookie(req, "theme"));
   let name = (
     tname ?
       fs.existsSync(`./themes/${tname}`) ?
