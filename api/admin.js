@@ -35,7 +35,7 @@ module.exports.load = async function(app, db) {
             }
         );
         let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
-        //if ((await version.json()).version == newsettings.version) return res.send("You are already using the latest version of Dashactyl");
+        if ((await version.json()).version == newsettings.version) return res.send("You are already using the latest version of Dashactyl");
         let update = await fetch(
             "https://real2two.github.io/dashactyl/update",
             {
