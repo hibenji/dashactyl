@@ -20,6 +20,7 @@
             <h3><%= extra.home.bottommsg %></h3>
             <br><br>
             <button class="button" onclick="window.location.href = '<%= userinfo ? extra.home.buttontext.loggedin.link : extra.home.buttontext.loggedout.link %>';"><%= userinfo ? extra.home.buttontext.loggedin.text : extra.home.buttontext.loggedout.text %></button>
+            <br><br><p><a href="#" onclick="document.cookie = 'theme=default'; window.location.reload();">Use dark theme.</a></p>
         </center>
     </body>
 </html>

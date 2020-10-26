@@ -71,9 +71,9 @@
             let cpu = 0;
             let servers = pterodactyl.relationships.servers.data.length;
             for (let i = 0, len = pterodactyl.relationships.servers.data.length; i < len; i++) {
-                ram = ram + pterodactyl.relationships.servers.data[i].attributes.limits.memory;
-                disk = disk + pterodactyl.relationships.servers.data[i].attributes.limits.disk;
-                cpu = cpu + pterodactyl.relationships.servers.data[i].attributes.limits.cpu;
+                ram = ram + (typeof pterodactyl.relationships.servers.data[i].attributes.limits.memory == "number" ? pterodactyl.relationships.servers.data[i].attributes.limits.memory : 0);
+                disk = disk + (typeof pterodactyl.relationships.servers.data[i].attributes.limits.disk == "number" ? pterodactyl.relationships.servers.data[i].attributes.limits.disk : 0);
+                cpu = cpu + (typeof pterodactyl.relationships.servers.data[i].attributes.limits.cpu == "number" ? pterodactyl.relationships.servers.data[i].attributes.limits.cpu : 0);
             }
         %>
         
@@ -108,5 +108,6 @@
             </div>
         </div>
         <br><br><br>
+        <p><a href="#" style="margin-left: 5%;" onclick="document.cookie = 'theme=light'; window.location.reload();">Use light theme.</a></p>
     </body>
 </html>
