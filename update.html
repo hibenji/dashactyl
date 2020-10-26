@@ -1,21 +1,31 @@
 // This update page will only work for versions 0.1.2+.
 (async () => {
-    let updateindexjs = await fetch(
-        "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-fixedthemesexploit/index.js",
-        {
-            method: "get"
-        }
-    );
-    fs.writeFile(`./index.js`, await updateindexjs.text(), (err) => { 
-        if (err) {
-            console.log(err); 
-        };
-        newsettings.version = "0.1.2-fixedthemesexploit";
-        fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
-            if (err) { 
-                console.log(err); 
+    let themefiles = fs.readdirSync('./themes/default').filter(file => file.endsWith('.ejs'));
+    for (let i = 0, len = themefiles.length; i < len; i++) {
+        fs.writeFile(`./themes/default/${themefiles[i]}`, fs.readFileSync(`./themes/default/${themefiles[i]}`).toString().replace(`<link href="/assets/default/style.css" rel="stylesheet">`, `<link href="/assets/<%= theme %>/style.css" rel="stylesheet">`), (err) => {
+            if (err) {
+                console.log(err);
             };
-            process.exit();
         });
-    });
+        if (i == themefiles.length - 1) {
+            let updateindexjs = await fetch(
+                "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes2/index.js",
+                {
+                    method: "get"
+                }
+            );
+            fs.writeFile(`./index.js`, await updateindexjs.text(), (err) => { 
+                if (err) {
+                    console.log(err); 
+                };
+                newsettings.version = "0.1.2-themes2";
+                fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
+                    if (err) { 
+                        console.log(err); 
+                    };
+                    process.exit();
+                });
+            });
+        }
+    }
 })();
