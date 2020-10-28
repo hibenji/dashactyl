@@ -2,13 +2,7 @@
 
 (async () => {
     let thenewindexjs = await fetch(
-      "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/index.js",
-       {
-          method: "get"
-       }
-    );
-    let newapipagesjs = await fetch(
-      "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/api/pages.js",
+      "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/index.js",
        {
           method: "get"
        }
@@ -18,22 +12,39 @@
         console.log(err); 
       };
       (async () => {
+        if (newsettings.version == "0.1.2-themes4") {
+          newsettings.version = "0.1.2-themes5";
+          fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
+            if (err) { 
+              console.log(err); 
+            };
+            process.exit();
+          });
+          return;
+        }
+        let newapipagesjs = await fetch(
+          "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/api/pages.js",
+           {
+              method: "get"
+           }
+        );
         fs.writeFile(`./api/pages.js`, await newapipagesjs.text(), (err) => { 
             if (err) { 
               console.log(err); 
             };
             if (newsettings.version == "0.1.2-themes3") {
-              newsettings.version = "0.1.2-themes4";
+              newsettings.version = "0.1.2-themes5";
               fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
                 if (err) { 
                   console.log(err); 
                 };
                 process.exit();
               });
+              return;
             } else {
               (async () => {
                 let fixeddashboardejs = await fetch(
-                    "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/themes/default/dashboard.ejs",
+                    "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/themes/default/dashboard.ejs",
                     {
                         method: "get"
                     }
@@ -44,7 +55,7 @@
                     };
                     (async () => {
                         let fixedindexejs = await fetch(
-                            "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/themes/default/index.ejs",
+                            "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/themes/default/index.ejs",
                             {
                                 method: "get"
                             }
@@ -63,7 +74,7 @@
                                     };
                                     (async () => {
                                         let lightthemestyle = await fetch(
-                                            "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/assets/light/style.css",
+                                            "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/assets/light/style.css",
                                             {
                                                 method: "get"
                                             }
@@ -76,7 +87,7 @@
                                                 let themefiles = fs.readdirSync('./themes/default');
                                                 for (let i = 0, len = themefiles.length; i < len; i++) {
                                                     let lightthemefile = await fetch(
-                                                        "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes4/themes/light/" + themefiles[i],
+                                                        "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/themes/light/" + themefiles[i],
                                                         {
                                                             method: "get"
                                                         }
@@ -87,7 +98,7 @@
                                                         };
                                                     });
                                                     if (i == themefiles.length - 1) {
-                                                        newsettings.version = "0.1.2-themes4";
+                                                        newsettings.version = "0.1.2-themes5";
                                                         fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
                                                             if (err) { 
                                                                 console.log(err); 
