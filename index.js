@@ -26,6 +26,7 @@ module.exports.renderdataeval =
       req: req,
       settings: newsettings,
       userinfo: req.session.userinfo,
+      packagename: await db.get("package-" + req.session.userinfo.id) ? await db.get("package-" + req.session.userinfo.id) : newsettings.api.client.packages.default,
       packages: req.session.userinfo ? newsettings.api.client.packages.list[await db.get("package-" + req.session.userinfo.id) ? await db.get("package-" + req.session.userinfo.id) : newsettings.api.client.packages.default] : null,
       pterodactyl: req.session.pterodactyl,
       theme: theme.name,
