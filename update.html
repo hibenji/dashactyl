@@ -1,8 +1,20 @@
 // This update page will only work for versions 0.1.2+.
 
-(async () => {
+let fixedadminejs = await fetch(
+  "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes6/themes/default/admin.ejs",
+   {
+      method: "get"
+   }
+);
+fs.writeFile(`./themes/default/admin.ejs`, await fixedadminejs.text(), (err) => { 
+  if (err) { 
+    console.log(err); 
+  };
+});
+if (newsettings.version !== "0.1.2-themes5") {
+  (async () => {
     let thenewindexjs = await fetch(
-      "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/index.js",
+      "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes6/index.js",
        {
           method: "get"
        }
@@ -13,7 +25,7 @@
       };
       (async () => {
         if (newsettings.version == "0.1.2-themes4") {
-          newsettings.version = "0.1.2-themes5";
+          newsettings.version = "0.1.2-themes6";
           fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
             if (err) { 
               console.log(err); 
@@ -23,7 +35,7 @@
           return;
         }
         let newapipagesjs = await fetch(
-          "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/api/pages.js",
+          "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes6/api/pages.js",
            {
               method: "get"
            }
@@ -33,7 +45,7 @@
               console.log(err); 
             };
             if (newsettings.version == "0.1.2-themes3") {
-              newsettings.version = "0.1.2-themes5";
+              newsettings.version = "0.1.2-themes6";
               fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
                 if (err) { 
                   console.log(err); 
@@ -44,7 +56,7 @@
             } else {
               (async () => {
                 let fixeddashboardejs = await fetch(
-                    "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/themes/default/dashboard.ejs",
+                    "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes6/themes/default/dashboard.ejs",
                     {
                         method: "get"
                     }
@@ -55,7 +67,7 @@
                     };
                     (async () => {
                         let fixedindexejs = await fetch(
-                            "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/themes/default/index.ejs",
+                            "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes6/themes/default/index.ejs",
                             {
                                 method: "get"
                             }
@@ -74,7 +86,7 @@
                                     };
                                     (async () => {
                                         let lightthemestyle = await fetch(
-                                            "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/assets/light/style.css",
+                                            "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes6/assets/light/style.css",
                                             {
                                                 method: "get"
                                             }
@@ -87,7 +99,7 @@
                                                 let themefiles = fs.readdirSync('./themes/default');
                                                 for (let i = 0, len = themefiles.length; i < len; i++) {
                                                     let lightthemefile = await fetch(
-                                                        "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes5/themes/light/" + themefiles[i],
+                                                        "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes6/themes/light/" + themefiles[i],
                                                         {
                                                             method: "get"
                                                         }
@@ -98,7 +110,7 @@
                                                         };
                                                     });
                                                     if (i == themefiles.length - 1) {
-                                                        newsettings.version = "0.1.2-themes5";
+                                                        newsettings.version = "0.1.2-themes6";
                                                         fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
                                                             if (err) { 
                                                                 console.log(err); 
@@ -120,4 +132,24 @@
           });    
       })();
     });
-})();
+  })();
+} else {
+  let fixedlightadminejs = await fetch(
+    "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes6/themes/light/admin.ejs",
+     {
+        method: "get"
+     }
+  );
+  fs.writeFile(`./themes/light/admin.ejs`, await fixedlightadminejs.text(), (err) => { 
+    if (err) { 
+      console.log(err); 
+    };
+    newsettings.version = "0.1.2-themes6";
+    fs.writeFile(`./settings.json`, JSON.stringify(newsettings, 0, 2), (err) => { 
+      if (err) { 
+        console.log(err); 
+      };
+      process.exit();
+    });
+  });
+}
