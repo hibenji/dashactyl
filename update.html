@@ -1,16 +1,16 @@
 // This update page will only work for versions 0.1.2+.
 
+(async () => {
 let fixedadminejs = await fetch(
   "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes6/themes/default/admin.ejs",
    {
       method: "get"
    }
-);
-fs.writeFile(`./themes/default/admin.ejs`, await fixedadminejs.text(), (err) => { 
-  if (err) { 
-    console.log(err); 
-  };
-});
+  (async () => {
+    fs.writeFile(`./themes/default/admin.ejs`, await fixedadminejs.text(), (err) => { 
+      if (err) { 
+        console.log(err); 
+      };
 if (newsettings.version !== "0.1.2-themes5") {
   (async () => {
     let thenewindexjs = await fetch(
@@ -134,13 +134,14 @@ if (newsettings.version !== "0.1.2-themes5") {
     });
   })();
 } else {
+(async () => {
   let fixedlightadminejs = await fetch(
     "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes6/themes/light/admin.ejs",
      {
         method: "get"
      }
   );
-  fs.writeFile(`./themes/light/admin.ejs`, await fixedlightadminejs.text(), (err) => { 
+  fs.writeFile(`./themes/light/admin.ejs`, await fixedlightadminejs.text(), (err) => {
     if (err) { 
       console.log(err); 
     };
@@ -152,4 +153,9 @@ if (newsettings.version !== "0.1.2-themes5") {
       process.exit();
     });
   });
+})();
 }
+    });
+  })();
+);
+})();
