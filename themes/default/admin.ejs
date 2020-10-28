@@ -69,7 +69,7 @@
         <p style="margin-left: 5%;">Package: <select class="select-selected" id="package">
             <option value="">Default Plan (Currently: <%= settings.api.client.packages.default %>)</option>
             <% for (let [name, value] of Object.entries(settings.api.client.packages.list)) { %>
-                <option value="<%= name %>"><%= name %> (RAM: <%= value.ram %>MB, Disk: <%= value.disk %>MB, CPU: <%= value.cpu %>%, Servers: <%= value.servers %>%)</option>
+                <option value="<%= name %>"><%= name %> (RAM: <%= value.ram %>MB, Disk: <%= value.disk %>MB, CPU: <%= value.cpu %>%, Servers: <%= value.servers %>)</option>
             <% } %>
         </select></p>
         <center><button onclick="submitForm()" class="button">Change</button></center>
