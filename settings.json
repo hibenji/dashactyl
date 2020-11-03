@@ -12,6 +12,14 @@
     "database": "sqlite://database.sqlite",
     "api": {
         "client": {
+            "allow": {
+                "newusers": true,
+                "server": {
+                    "create": false,
+                    "modify": false,
+                    "delete": false
+                }
+            },
             "oauth2": {
                 "id": "discord oauth2 application id",
                 "secret": "discord oauth2 application secret",
