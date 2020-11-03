@@ -56,10 +56,7 @@
                     if (ver.version == currentver) {
                         document.getElementById("latestversion").innerHTML = `<span style="margin-left: 5%;">You are running Dashactyl version <code>${currentver}</code>. Your dashboard is up-to-date!</span>`;
                     } else {
-                        document.getElementById("latestversion").innerHTML = `<span style="margin-left: 5%;">Your dashboard is <b>not up-to-date!</b> The latest version is <code>${ver.version}</code> and you are currently running version <code><%= settings.version %></code>.</span>
-                            <br><br><span style="margin-left: 5%;">Keep in mind the dashboard will shutdown when you click the "UPDATE" button unless you made the dashboard automatically restart.</span>
-                            <br><br>
-                            <button onclick="window.location.href = '/update'" class="button" style="margin-left: 5%;">Update</button>`;
+                        document.getElementById("latestversion").innerHTML = `<span style="margin-left: 5%;">Your dashboard is <b>not up-to-date!</b> The latest version is <code>${ver.version}</code> and you are currently running version <code><%= settings.version %></code>.</span>`;
                     };
                 }));
         </script>

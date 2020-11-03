@@ -20,7 +20,9 @@ if (settings.pterodactyl) if (settings.pterodactyl.domain) {
 
 const fetch = require('node-fetch');
 
-const indexjs = require("../index.js")
+const indexjs = require("../index.js");
+
+const fs = require("fs");
 
 module.exports.load = async function(app, db) {
   app.get("/login", async (req, res) => {
@@ -66,58 +68,63 @@ module.exports.load = async function(app, db) {
       let userinfo = JSON.parse(await userjson.text());
       if (userinfo.verified == true) {
         if (!await db.get("users-" + userinfo.id)) {
-          let accountjson = await fetch(
-            settings.pterodactyl.domain + "/api/application/users",
-            {
-              method: "post",
-              headers: {
-                'Content-Type': 'application/json',
-                "Authorization": `Bearer ${settings.pterodactyl.key}`
-              },
-              body: JSON.stringify({
-                username: userinfo.id,
-                email: userinfo.email,
-                first_name: userinfo.username,
-                last_name: "#" + userinfo.discriminator
-              })
-            }
-          );
-          if (await accountjson.status == 201) {
-            let accountinfo = JSON.parse(await accountjson.text());
-            let userids = await db.get("users") ? await db.get("users") : [];
-            userids.push(accountinfo.attributes.id);
-            await db.set("users", userids);
-            await db.set("users-" + userinfo.id, accountinfo.attributes.id);
-            req.session.newaccount = true;
-            return res.redirect("/login?prompt=true");
-          } else {
-            let accountlistjson = await fetch(
-              settings.pterodactyl.domain + "/api/application/users?include=servers",
+          let newsettings = JSON.parse(fs.readFileSync("./settings.json"));
+          if (newsettings.api.client.allow.newusers == true) {
+            let accountjson = await fetch(
+              settings.pterodactyl.domain + "/api/application/users",
               {
-                method: "get",
+                method: "post",
                 headers: {
                   'Content-Type': 'application/json',
                   "Authorization": `Bearer ${settings.pterodactyl.key}`
-                }
+                },
+                body: JSON.stringify({
+                  username: userinfo.id,
+                  email: userinfo.email,
+                  first_name: userinfo.username,
+                  last_name: "#" + userinfo.discriminator
+                })
               }
             );
-            let accountlist = JSON.parse(await accountlistjson.text());
-            let user = accountlist.data.filter(acc => acc.attributes.email == userinfo.email);
-            if (user.length == 1) {
-              let userid = user[0].attributes.id;
+            if (await accountjson.status == 201) {
+              let accountinfo = JSON.parse(await accountjson.text());
               let userids = await db.get("users") ? await db.get("users") : [];
-              if (userids.filter(id => id == userid).length == 0) {
-                userids.push(userid);
-                await db.set("users", userids);
-                await db.set("users-" + userinfo.id, userid);
-                req.session.pterodactyl = user[0].attributes;
-              } else {
-                return res.send("We have detected an account with your Discord email on it but the user id has already been claimed on another Discord account.");
-              }
+              userids.push(accountinfo.attributes.id);
+              await db.set("users", userids);
+              await db.set("users-" + userinfo.id, accountinfo.attributes.id);
+              req.session.newaccount = true;
+              return res.redirect("/login?prompt=true");
             } else {
-              return res.send("An error has occured when attempting to create your account.");
+              let accountlistjson = await fetch(
+                settings.pterodactyl.domain + "/api/application/users?include=servers",
+                {
+                  method: "get",
+                  headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${settings.pterodactyl.key}`
+                  }
+                }
+              );
+              let accountlist = JSON.parse(await accountlistjson.text());
+              let user = accountlist.data.filter(acc => acc.attributes.email == userinfo.email);
+              if (user.length == 1) {
+                let userid = user[0].attributes.id;
+                let userids = await db.get("users") ? await db.get("users") : [];
+                if (userids.filter(id => id == userid).length == 0) {
+                  userids.push(userid);
+                  await db.set("users", userids);
+                  await db.set("users-" + userinfo.id, userid);
+                  req.session.pterodactyl = user[0].attributes;
+                } else {
+                  return res.send("We have detected an account with your Discord email on it but the user id has already been claimed on another Discord account.");
+                }
+              } else {
+                return res.send("An error has occured when attempting to create your account.");
+              };
             };
-          };
+          } else {
+            return res.send("New users cannot signup currently.")
+          }
         } else {
           let cacheaccount = await fetch(
             settings.pterodactyl.domain + "/api/application/users/" + (await db.get("users-" + userinfo.id)) + "?include=servers",

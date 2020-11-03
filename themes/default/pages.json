@@ -11,7 +11,10 @@
         "modifyserver": "/servers",
         "failedmodifyserver": "/servers/edit",
         "setplan": "/admin",
-        "failedsetplan": "/admin"
+        "failedsetplan": "/admin",
+        "createserverdisabled": "/servers?err=disabled",
+        "modifyserverdisabled": "/servers?err=disabled",
+        "deleteserverdisabled": "/servers?err=disabled"
     },
     "pages": {
         "dashboard": "dashboard.ejs",

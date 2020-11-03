@@ -7,6 +7,9 @@
         <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <title><%= extra.admin.title.default %></title>
+        <% if (settings.api.arcio.enabled == true) { %>
+            <script async src="https://arc.io/widget.js#<%= settings.api.arcio.widgetid %>"></script>
+        <% } %>
     </head>
     <body>
         <ul style="overflow: hidden;" class="ul">
@@ -56,10 +59,7 @@
                     if (ver.version == currentver) {
                         document.getElementById("latestversion").innerHTML = `<span style="margin-left: 5%;">You are running Dashactyl version <code>${currentver}</code>. Your dashboard is up-to-date!</span>`;
                     } else {
-                        document.getElementById("latestversion").innerHTML = `<span style="margin-left: 5%;">Your dashboard is <b>not up-to-date!</b> The latest version is <code>${ver.version}</code> and you are currently running version <code><%= settings.version %></code>.</span>
-                            <br><br><span style="margin-left: 5%;">Keep in mind the dashboard will shutdown when you click the "UPDATE" button unless you made the dashboard automatically restart.</span>
-                            <br><br>
-                            <button onclick="window.location.href = '/update'" class="button" style="margin-left: 5%;">Update</button>`;
+                        document.getElementById("latestversion").innerHTML = `<span style="margin-left: 5%;">Your dashboard is <b>not up-to-date!</b> The latest version is <code>${ver.version}</code> and you are currently running version <code><%= settings.version %></code>.</span>`;
                     };
                 }));
         </script>

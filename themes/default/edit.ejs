@@ -7,6 +7,9 @@
         <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <title><%= extra.servers.title.modify %></title>
+        <% if (settings.api.arcio.enabled == true) { %>
+            <script async src="https://arc.io/widget.js#<%= settings.api.arcio.widgetid %>"></script>
+        <% } %>
     </head>
     <body>
         <ul style="overflow: hidden;" class="ul">

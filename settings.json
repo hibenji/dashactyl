@@ -1,5 +1,5 @@
 {
-    "version": "0.1.2-themes6",
+    "version": "0.2.0",
     "defaulttheme": "default",
     "website": {
         "port": 80,
@@ -93,6 +93,10 @@
                     }
                 }
             }
+        },
+        "arcio": {
+          "enabled": false,
+          "widgetid": "arc.io widget id here"
         }
     }
 }
