@@ -1,6 +1,9 @@
 // This update page will only work for versions 0.1.2+.
 
-(async () => {
+if (newsettings.version == "0.1.2-themes6") {
+  res.send("Update button is gone now.");
+} else {
+  (async () => {
     let fixedadminejs = await fetch(
       "https://raw.githubusercontent.com/real2two/dashactyl/0.1.2-themes6/themes/default/admin.ejs",
       {
@@ -159,4 +162,5 @@
       });
     })();
   })();
+}
   
