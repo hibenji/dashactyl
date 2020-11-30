@@ -15,9 +15,9 @@
             "allow": {
                 "newusers": true,
                 "server": {
-                    "create": false,
-                    "modify": false,
-                    "delete": false
+                    "create": true,
+                    "modify": true,
+                    "delete": true
                 }
             },
             "oauth2": {
