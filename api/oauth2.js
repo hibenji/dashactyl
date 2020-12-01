@@ -70,6 +70,8 @@ module.exports.load = async function(app, db) {
         if (!await db.get("users-" + userinfo.id)) {
           let newsettings = JSON.parse(fs.readFileSync("./settings.json"));
           if (newsettings.api.client.allow.newusers == true) {
+            let genpassword = null;
+            if (typeof newsettings.api.client.passwordgenerator == "number") genpassword = makeid(newsettings.api.client.passwordgenerator);
             let accountjson = await fetch(
               settings.pterodactyl.domain + "/api/application/users",
               {
@@ -82,7 +84,8 @@ module.exports.load = async function(app, db) {
                   username: userinfo.id,
                   email: userinfo.email,
                   first_name: userinfo.username,
-                  last_name: "#" + userinfo.discriminator
+                  last_name: "#" + userinfo.discriminator,
+                  password: genpassword
                 })
               }
             );
@@ -93,6 +96,7 @@ module.exports.load = async function(app, db) {
               await db.set("users", userids);
               await db.set("users-" + userinfo.id, accountinfo.attributes.id);
               req.session.newaccount = true;
+              req.session.password = genpassword;
               return res.redirect("/login?prompt=true");
             } else {
               let accountlistjson = await fetch(
@@ -148,3 +152,13 @@ module.exports.load = async function(app, db) {
     };
   });
 };
+
+function makeid(length) {
+  let result = '';
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}

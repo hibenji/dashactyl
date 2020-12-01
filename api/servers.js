@@ -100,7 +100,10 @@ module.exports.load = async function(app, db) {
               body: JSON.stringify(await specs)
             }
           );
-          if (await serverinfo.statusText !== "Created") return res.redirect(`${redirectlink}?err=ERRORONCREATE`);
+          if (await serverinfo.statusText !== "Created") {
+            console.log(await serverinfo.text());
+            return res.redirect(`${redirectlink}?err=ERRORONCREATE`);
+          }
           let serverinfotext = JSON.parse(await serverinfo.text());
           let newpterodactylinfo = req.session.pterodactyl;
           newpterodactylinfo.relationships.servers.data.push(serverinfotext);

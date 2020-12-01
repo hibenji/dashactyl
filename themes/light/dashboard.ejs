@@ -31,7 +31,11 @@
             <div class="alert">
                 <span class="closebtn">&times;</span>  
                 A new account has been created for you on the Pterodactyl Panel.<br>
-                Please check your email to set your password.
+                <% if (req.session.password) { %>
+                    Your password is <code><%= req.session.password %></code>! Make sure to keep this password in a safe place.
+                <% } else { %>
+                    Please check your email to set your password.
+                <% } %>
             </div>
             <script>
                 let close = document.getElementsByClassName("closebtn");

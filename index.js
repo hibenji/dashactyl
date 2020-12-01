@@ -115,6 +115,7 @@ app.get("*", async (req, res) => {
       null,
     async function (err, str) {
       delete req.session.newaccount;
+      delete req.session.password;
       if (!req.session.userinfo || !req.session.pterodactyl) {
         if (err) {
           console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
@@ -157,6 +158,7 @@ app.get("*", async (req, res) => {
         null,
       function (err, str) {
         delete req.session.newaccount;
+        delete req.session.password;
         if (err) {
           console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
           console.log(err);
@@ -173,6 +175,7 @@ app.get("*", async (req, res) => {
     null,
   function (err, str) {
     delete req.session.newaccount;
+    delete req.session.password;
     if (err) {
       console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
       console.log(err);
