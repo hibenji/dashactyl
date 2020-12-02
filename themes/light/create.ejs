@@ -89,13 +89,18 @@
         <div style="width: 80%; margin-left: 5%;"><br>
             <h3 style="margin-left: 5%;">Create a Server</h3>
             <p style="margin-left: 5%;">Name: <input id="name"></p>
-            <p style="margin-left: 5%;">Egg:&nbsp;&nbsp;&nbsp;&nbsp;<select class="select-selected" id="egg">
+            <p style="margin-left: 5%;">Location:&nbsp;<select class="select-selected" id="location">
+                <% for (let [name, value] of Object.entries(settings.api.client.locations)) { %>
+                    <option value="<%= value %>"><%= name %></option>
+                <% } %>
+            </select></p>
+            <p style="margin-left: 5%;">Egg:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select class="select-selected" id="egg">
                 <% for (let [name, value] of Object.entries(settings.api.client.eggs)) { %>
                     <option value="<%= name %>"><%= value.display %></option>
                 <% } %>
             </select></p>
             <p style="margin-left: 5%;">RAM:&nbsp;&nbsp;&nbsp;<input id="ram"></p>
-            <p style="margin-left: 5%;">Disk:&nbsp;&nbsp;&nbsp;<input id="disk"></p>
+            <p style="margin-left: 5%;">Disk:&nbsp;&nbsp;&nbsp;&nbsp;<input id="disk"></p>
             <p style="margin-left: 5%;">CPU:&nbsp;&nbsp;&nbsp;<input id="cpu"></p>
             <center>
                 <button onclick="submitForm()" class="button">Create</button>
@@ -108,7 +113,8 @@
                 let ram = encodeURIComponent(document.getElementById("ram").value);
                 let disk = encodeURIComponent(document.getElementById("disk").value);
                 let cpu = encodeURIComponent(document.getElementById("cpu").value);
-                document.location.href = `/create?name=${name}&egg=${egg}&ram=${ram}&disk=${disk}&cpu=${cpu}`;
+                let location = encodeURIComponent(document.getElementById("location").value);
+                document.location.href = `/create?name=${name}&egg=${egg}&ram=${ram}&disk=${disk}&cpu=${cpu}&location=${location}`;
             };
         </script>
     </body>

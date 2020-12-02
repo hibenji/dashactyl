@@ -34,7 +34,7 @@ module.exports.load = async function(app, db) {
     if (newsettings.api.client.allow.server.create == true) {
       let redirectlink = theme.settings.redirect.failedcreateserver ? theme.settings.redirect.failedcreateserver : "/"; // fail redirect link
       
-      if (req.query.name && req.query.ram && req.query.disk && req.query.cpu && req.query.egg) {
+      if (req.query.name && req.query.ram && req.query.disk && req.query.cpu && req.query.egg && req.query.location) {
         try {
           decodeURIComponent(req.query.name)
         } catch(err) {
@@ -44,6 +44,17 @@ module.exports.load = async function(app, db) {
         if (name.length < 1) return res.redirect(`${redirectlink}?err=LITTLESERVERNAME`);
         if (name.length > 255) return res.redirect(`${redirectlink}?err=BIGSERVERNAME`);
   
+        let location = req.query.location;
+
+        let continuelocation = false;
+        for (let [name, value] of Object.entries(newsettings.api.client.locations)) {
+          if (location == value.toString()) {
+            continuelocation = true;
+          }
+        }
+
+        if (continuelocation == false) return res.redirect(`${redirectlink}?err=INVALIDLOCATION`);
+
         let egg = req.query.egg;
   
         let egginfo = newsettings.api.client.eggs[egg];
@@ -91,6 +102,7 @@ module.exports.load = async function(app, db) {
             dedicated_ip: false,
             port_range: []
           }
+          specs.deploy.locations = [location];
   
           let serverinfo = await fetch(
             settings.pterodactyl.domain + "/api/application/servers",
