@@ -18,7 +18,7 @@
                    "enabled": false,
                    "guildid": "guild id"
                 }
-            }
+            },
             "passwordgenerator": {
               "signup": false,
               "length": 8
