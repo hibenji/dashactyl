@@ -71,19 +71,43 @@ module.exports.load = async function(app, db) {
       let userinfo = JSON.parse(await userjson.text());
       if (userinfo.verified == true) {
         if (newsettings.api.client.bot.joinguild.enabled == true) {
-          let joinserver = await fetch(
-            `https://discord.com/api/guilds/${newsettings.api.client.bot.joinguild.guildid}/members/${userinfo.id}`,
-            {
-              method: "put",
-              headers: {
-                'Content-Type': 'application/json',
-                "Authorization": `Bot ${newsettings.api.client.bot.token}`
-              },
-              body: JSON.stringify({
-                access_token: codeinfo.access_token
-              })
+          if (typeof newsettings.api.client.bot.joinguild.guildid == "string") {
+            await fetch(
+              `https://discord.com/api/guilds/${newsettings.api.client.bot.joinguild.guildid}/members/${userinfo.id}`,
+              {
+                method: "put",
+                headers: {
+                  'Content-Type': 'application/json',
+                  "Authorization": `Bot ${newsettings.api.client.bot.token}`
+                },
+                body: JSON.stringify({
+                  access_token: codeinfo.access_token
+                })
+              }
+            );  
+          } else if (typeof newsettings.api.client.bot.joinguild.guildid == "object") {
+            if (Array.isArray(newsettings.api.client.bot.joinguild.guildid)) {
+              for (let guild of newsettings.api.client.bot.joinguild.guildid) {
+                await fetch(
+                  `https://discord.com/api/guilds/${guild}/members/${userinfo.id}`,
+                  {
+                    method: "put",
+                    headers: {
+                      'Content-Type': 'application/json',
+                      "Authorization": `Bot ${newsettings.api.client.bot.token}`
+                    },
+                    body: JSON.stringify({
+                      access_token: codeinfo.access_token
+                    })
+                  }
+                );  
+              }
+            } else {
+              return res.send("api.client.bot.joinguild.guildid is not an array nor a string.");
             }
-          );
+          } else {
+            return res.send("api.client.bot.joinguild.guildid is not an array nor a string.");
+          }
         }
         if (!await db.get("users-" + userinfo.id)) {
           if (newsettings.api.client.allow.newusers == true) {

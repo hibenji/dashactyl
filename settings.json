@@ -16,7 +16,7 @@
                "token": "bot token",
                "joinguild": {
                    "enabled": false,
-                   "guildid": "guild id"
+                   "guildid": ["guild id", "another guild id"]
                 }
             },
             "passwordgenerator": {
