@@ -26,8 +26,9 @@ const fs = require("fs");
 
 module.exports.load = async function(app, db) {
   app.get("/login", async (req, res) => {
-    if (req.query.redirect) req.session.redirect = "/" + req.query.redirect
-    res.redirect(`https://discord.com/api/oauth2/authorize?client_id=${settings.api.client.oauth2.id}&redirect_uri=${encodeURIComponent(settings.api.client.oauth2.link + settings.api.client.oauth2.callbackpath)}&response_type=code&scope=identify%20email${settings.api.client.oauth2.prompt == false ? "&prompt=none" : (req.query.prompt ? (req.query.prompt == "none" ? "&prompt=none" : "") : "")}`);
+    if (req.query.redirect) req.session.redirect = "/" + req.query.redirect;
+    let newsettings = JSON.parse(fs.readFileSync("./settings.json"));
+    res.redirect(`https://discord.com/api/oauth2/authorize?client_id=${settings.api.client.oauth2.id}&redirect_uri=${encodeURIComponent(settings.api.client.oauth2.link + settings.api.client.oauth2.callbackpath)}&response_type=code&scope=identify%20email${newsettings.api.client.bot.joinguild.enabled == true ? "%20guilds.join" : ""}${settings.api.client.oauth2.prompt == false ? "&prompt=none" : (req.query.prompt ? (req.query.prompt == "none" ? "&prompt=none" : "") : "")}`);
   });
 
   app.get("/logout", (req, res) => {
@@ -42,7 +43,7 @@ module.exports.load = async function(app, db) {
     delete req.session.redirect;
     if (!req.query.code) return res.send("Missing code.")
     let json = await fetch(
-      'https://discordapp.com/api/oauth2/token',
+      'https://discord.com/api/oauth2/token',
       {
         method: "post",
         body: "client_id=" + settings.api.client.oauth2.id + "&client_secret=" + settings.api.client.oauth2.secret + "&grant_type=authorization_code&code=" + encodeURIComponent(req.query.code) + "&redirect_uri=" + encodeURIComponent(settings.api.client.oauth2.link + settings.api.client.oauth2.callbackpath),
@@ -53,11 +54,13 @@ module.exports.load = async function(app, db) {
       let codeinfo = JSON.parse(await json.text());
       let scopes = codeinfo.scope;
       let missingscopes = [];
+      let newsettings = JSON.parse(fs.readFileSync("./settings.json"));
       if (scopes.replace(/identify/g, "") == scopes) missingscopes.push("identify");
       if (scopes.replace(/email/g, "") == scopes) missingscopes.push("email");
+      if (newsettings.api.client.bot.joinguild.enabled == true) if (scopes.replace(/guilds.join/g, "") == scopes) missingscopes.push("guilds.join");
       if (missingscopes.length !== 0) return res.send("Missing scopes: " + missingscopes.join(", "));
       let userjson = await fetch(
-        'https://discordapp.com/api/users/@me',
+        'https://discord.com/api/users/@me',
         {
           method: "get",
           headers: {
@@ -67,8 +70,22 @@ module.exports.load = async function(app, db) {
       );
       let userinfo = JSON.parse(await userjson.text());
       if (userinfo.verified == true) {
+        if (newsettings.api.client.bot.joinguild.enabled == true) {
+          let joinserver = await fetch(
+            `https://discord.com/api/guilds/${newsettings.api.client.bot.joinguild.guildid}/members/${userinfo.id}`,
+            {
+              method: "put",
+              headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bot ${newsettings.api.client.bot.token}`
+              },
+              body: JSON.stringify({
+                access_token: codeinfo.access_token
+              })
+            }
+          );
+        }
         if (!await db.get("users-" + userinfo.id)) {
-          let newsettings = JSON.parse(fs.readFileSync("./settings.json"));
           if (newsettings.api.client.allow.newusers == true) {
             let genpassword = null;
             if (typeof newsettings.api.client.passwordgenerator.signup == true) genpassword = makeid(newsettings.api.client.passwordgenerator["length"]);

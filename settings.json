@@ -1,5 +1,5 @@
 {
-    "version": "0.2.1",
+    "version": "0.2.2",
     "defaulttheme": "default",
     "website": {
         "port": 80,
@@ -12,6 +12,13 @@
     "database": "sqlite://database.sqlite",
     "api": {
         "client": {
+           "bot": {
+               "token": "bot token",
+               "joinguild": {
+                   "enabled": false,
+                   "guildid": "guild id"
+                }
+            }
             "passwordgenerator": {
               "signup": false,
               "length": 8
