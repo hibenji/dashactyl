@@ -138,7 +138,6 @@ module.exports.load = async function(app, db) {
               await db.set("users-" + userinfo.id, accountinfo.attributes.id);
               req.session.newaccount = true;
               req.session.password = genpassword;
-              return res.redirect("/login?prompt=true");
             } else {
               let accountlistjson = await fetch(
                 settings.pterodactyl.domain + "/api/application/users?include=servers",
@@ -170,18 +169,19 @@ module.exports.load = async function(app, db) {
           } else {
             return res.send("New users cannot signup currently.")
           }
-        } else {
-          let cacheaccount = await fetch(
-            settings.pterodactyl.domain + "/api/application/users/" + (await db.get("users-" + userinfo.id)) + "?include=servers",
-            {
-              method: "get",
-              headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
-            }
-          );
-          if (await cacheaccount.statusText == "Not Found") return res.send("An error has occured while attempting to get your user information.");
-          let cacheaccountinfo = JSON.parse(await cacheaccount.text());
-          req.session.pterodactyl = cacheaccountinfo.attributes;
         };
+
+        let cacheaccount = await fetch(
+          settings.pterodactyl.domain + "/api/application/users/" + (await db.get("users-" + userinfo.id)) + "?include=servers",
+          {
+            method: "get",
+            headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
+          }
+        );
+        if (await cacheaccount.statusText == "Not Found") return res.send("An error has occured while attempting to get your user information.");
+        let cacheaccountinfo = JSON.parse(await cacheaccount.text());
+        req.session.pterodactyl = cacheaccountinfo.attributes;
+
         req.session.userinfo = userinfo;
         let theme = indexjs.get(req);
         if (customredirect) return res.redirect(customredirect);
