@@ -12,9 +12,13 @@
     "database": "sqlite://database.sqlite",
     "api": {
         "client": {
-            "passwordgenerator": 8,
+            "passwordgenerator": {
+              "signup": false,
+              "length": 8
+            },
             "allow": {
                 "newusers": true,
+                "regen": true,
                 "server": {
                     "create": true,
                     "modify": true,
@@ -35,7 +39,8 @@
                 "/modify": 1,
                 "/updateinfo": 1,
                 "/setplan": 2,
-                "/admin": 1
+                "/admin": 1,
+                "/regen": 1
             },
             "packages": {
                 "default": "default",

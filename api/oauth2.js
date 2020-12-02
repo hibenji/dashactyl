@@ -71,7 +71,7 @@ module.exports.load = async function(app, db) {
           let newsettings = JSON.parse(fs.readFileSync("./settings.json"));
           if (newsettings.api.client.allow.newusers == true) {
             let genpassword = null;
-            if (typeof newsettings.api.client.passwordgenerator == "number") genpassword = makeid(newsettings.api.client.passwordgenerator);
+            if (typeof newsettings.api.client.passwordgenerator.signup == true) genpassword = makeid(newsettings.api.client.passwordgenerator["length"]);
             let accountjson = await fetch(
               settings.pterodactyl.domain + "/api/application/users",
               {

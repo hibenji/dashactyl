@@ -14,7 +14,8 @@
         "failedsetplan": "/admin",
         "createserverdisabled": "/servers?err=disabled",
         "modifyserverdisabled": "/servers?err=disabled",
-        "deleteserverdisabled": "/servers?err=disabled"
+        "deleteserverdisabled": "/servers?err=disabled",
+        "regenpassword": "/dashboard"
     },
     "pages": {
         "dashboard": "dashboard.ejs",

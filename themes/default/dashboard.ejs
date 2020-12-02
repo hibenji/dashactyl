@@ -30,12 +30,14 @@
             </li>
         </ul>
         <h2 style="margin-left: 5%; margin-top: 50px;">Your Account</h2>
-        <% if (req.session.newaccount) { %>
+        <% if (req.session.newaccount || req.session.password) { %>
             <div class="alert">
-                <span class="closebtn">&times;</span>  
-                A new account has been created for you on the Pterodactyl Panel.<br>
+                <span class="closebtn">&times;</span>
+                <% if (req.session.newaccount) { %>
+                    A new account has been created for you on the Pterodactyl Panel.<br>
+                <% } %>
                 <% if (req.session.password) { %>
-                    Your password is <code><%= req.session.password %></code>! Make sure to keep this password in a safe place.
+                    Your <% if (!req.session.newaccount) { %>new <% } %>password is <code><%= req.session.password %></code>! Make sure to keep this password in a safe place.
                 <% } else { %>
                     Please check your email to set your password.
                 <% } %>
@@ -61,6 +63,7 @@
             <h4 style="margin-left: 5%;">Username</h4>
             <input value="<%= pterodactyl.username %>" style="margin-left: 5%;" disabled>
             <br><br><br>
+            <button class="button" style="margin-left: 5%; width: 80%; background-color: #606D7B;" onclick="window.location.replace('/regen');">Regenerate your password.</button><br><br>
             <button class="button" style="margin-left: 5%; width: 80%; background-color: #606D7B;" onclick="window.location.replace('/updateinfo');">Update your account information.</button>
             <br><br><br><br>
         </div>

@@ -10,13 +10,13 @@ const fetch = require('node-fetch');
 const settings = require("./settings.json");
 
 const defaultthemesettings = {
-  "index": "index.ejs",
-  "notfound": "index.ejs",
-  "redirect": {},
-  "pages": {},
-  "mustbeloggedin": [],
-  "mustbeadmin": [],
-  "variables": {}
+  index: "index.ejs",
+  notfound: "index.ejs",
+  redirect: {},
+  pages: {},
+  mustbeloggedin: [],
+  mustbeadmin: [],
+  variables: {}
 };
 
 module.exports.renderdataeval =
