@@ -40,6 +40,33 @@ module.exports.load = async function(app, db) {
         } catch(err) {
           return res.redirect(`${redirectlink}?err=COULDNOTDECODENAME`);
         }
+
+        let packagename = await db.get("package-" + req.session.userinfo.id);
+        let package = newsettings.api.client.packages.list[packagename ? packagename : newsettings.api.client.packages.default];
+
+        let extra = 
+        await db.get("extra-" + req.session.userinfo.id) ?
+        await db.get("extra-" + req.session.userinfo.id) :
+        {
+          ram: 0,
+          disk: 0,
+          cpu: 0,
+          servers: 0
+        };
+
+        let ram2 = 0;
+        let disk2 = 0;
+        let cpu2 = 0;
+        let servers2 = 0;
+        for (let i = 0, len = req.session.pterodactyl.relationships.servers.data.length; i < len; i++) {
+          ram2 = ram2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.memory;
+          disk2 = disk2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.disk;
+          cpu2 = cpu2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.cpu;
+          servers2++;
+        };
+
+        if (servers2 >= package.servers + extra.servers) return res.redirect(`${redirectlink}?err=TOOMUCHSERVERS`);
+
         let name = decodeURIComponent(req.query.name);
         if (name.length < 1) return res.redirect(`${redirectlink}?err=LITTLESERVERNAME`);
         if (name.length > 255) return res.redirect(`${redirectlink}?err=BIGSERVERNAME`);
@@ -63,20 +90,9 @@ module.exports.load = async function(app, db) {
         let disk = parseFloat(req.query.disk);
         let cpu = parseFloat(req.query.cpu);
         if (!isNaN(ram) && !isNaN(disk) && !isNaN(cpu)) {
-          let packagename = await db.get("package-" + req.session.userinfo.id);
-          let package = newsettings.api.client.packages.list[packagename ? packagename : newsettings.api.client.packages.default];
-          let ram2 = 0;
-          let disk2 = 0;
-          let cpu2 = 0;
-          for (let i = 0, len = req.session.pterodactyl.relationships.servers.data.length; i < len; i++) {
-            ram2 = ram2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.memory;
-            disk2 = disk2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.disk;
-            cpu2 = cpu2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.cpu;
-          };
-  
-          if (ram2 + ram > package.ram) return res.redirect(`${redirectlink}?err=EXCEEDRAM&num=${package.ram - ram2}`);
-          if (disk2 + disk > package.disk) return res.redirect(`${redirectlink}?err=EXCEEDDISK&num=${package.disk - disk2}`);
-          if (cpu2 + cpu > package.cpu) return res.redirect(`${redirectlink}?err=EXCEEDCPU&num=${package.cpu - cpu2}`);
+          if (ram2 + ram > package.ram + extra.ram) return res.redirect(`${redirectlink}?err=EXCEEDRAM&num=${package.ram + extra.ram - ram2}`);
+          if (disk2 + disk > package.disk + extra.disk) return res.redirect(`${redirectlink}?err=EXCEEDDISK&num=${package.disk + extra.disk - disk2}`);
+          if (cpu2 + cpu > package.cpu + extra.cpu) return res.redirect(`${redirectlink}?err=EXCEEDCPU&num=${package.cpu + extra.cpu - cpu2}`);
           if (egginfo.minimum.ram) if (ram < egginfo.minimum.ram) return res.redirect(`${redirectlink}?err=TOOLITTLERAM&num=${egginfo.minimum.ram}`);
           if (egginfo.minimum.disk) if (disk < egginfo.minimum.disk) return res.redirect(`${redirectlink}?err=TOOLITTLEDISK&num=${egginfo.minimum.disk}`);
           if (egginfo.minimum.cpu) if (cpu < egginfo.minimum.cpu) return res.redirect(`${redirectlink}?err=TOOLITTLECPU&num=${egginfo.minimum.cpu}`);
@@ -179,9 +195,9 @@ module.exports.load = async function(app, db) {
   
         if (!egginfo) return res.redirect(`${redirectlink}?id=${req.query.id}&err=MISSINGEGG`);
   
-        if (ram2 + ram > package.ram) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDRAM&num=${package.ram - ram2}`);
-        if (disk2 + disk > package.disk) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDDISK&num=${package.disk - disk2}`);
-        if (cpu2 + cpu > package.cpu) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDCPU&num=${package.cpu - cpu2}`);
+        if (ram2 + ram > package.ram + extra.ram) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDRAM&num=${package.ram + extra.ram - ram2}`);
+        if (disk2 + disk > package.disk + extra.disk) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDDISK&num=${package.disk + extra.disk - disk2}`);
+        if (cpu2 + cpu > package.cpu + extra.cpu) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDCPU&num=${package.cpu + extra.cpu - cpu2}`);
         if (egginfo.minimum.ram) if (ram < egginfo.minimum.ram) return res.redirect(`${redirectlink}?id=${req.query.id}&err=TOOLITTLERAM&num=${egginfo.minimum.ram}`);
         if (egginfo.minimum.disk) if (disk < egginfo.minimum.disk) return res.redirect(`${redirectlink}?id=${req.query.id}&err=TOOLITTLEDISK&num=${egginfo.minimum.disk}`);
         if (egginfo.minimum.cpu) if (cpu < egginfo.minimum.cpu) return res.redirect(`${redirectlink}?id=${req.query.id}&err=TOOLITTLECPU&num=${egginfo.minimum.cpu}`);

@@ -33,6 +33,8 @@
                     There has been an error while attempting to create your server. Please alert an administrator to fix this problem.
                 <% } else if (req.query.err == "BIGSERVERNAME") { %>
                     Your server name must be less than <b>255</b> characters.
+                <% } else if (req.query.err == "TOOMUCHSERVERS") { %>
+                    The server could not be created because you have requested to create a server that exceeds your plan.
                 <% } else { %>
                     <% if (req.query.num) { %>
                         <% if (!isNaN(parseFloat(req.query.num))) { %>

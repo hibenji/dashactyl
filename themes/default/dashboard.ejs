@@ -112,7 +112,7 @@
             <div class="column" style="background-color: transparent;">
                 <div class="card">
                     <h3>Servers</h3>
-                    <p><code><%= servers %> server<%= servers == 1 ? "" : "s" %></code> / <code><%= packages.servers + extraresources.servers %> server<%= packages.ram + extraresources.servers == 1 ? "" : "s" %></code></p>
+                    <p><code><%= servers %> server<%= servers == 1 ? "" : "s" %></code> / <code><%= packages.servers + extraresources.servers %> server<%= packages.servers + extraresources.servers == 1 ? "" : "s" %></code></p>
                     <progress value="<%= servers %>" max="<%= packages.servers + extraresources.servers %>" style="width: 100%;"></progress>
                 </div>
             </div>
