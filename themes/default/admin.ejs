@@ -22,32 +22,38 @@
         <h2 style="margin-left: 5%;">Administrator Settings</h2>
         <p style="margin-left: 5%;">There is not much administrator settings yet.</p>
         <% if (req.query.err) { %>
-            <div class="alert">
-                <span class="closebtn">&times;</span>
-                <% if (req.query.err == "MISSINGID") { %>
-                    You have not provided the Discord user ID.
-                <% } else if (req.query.err == "INVALIDID") { %>
-                    You have provided a Discord user ID that does not exist or has not signed up on the dashboard.
-                <% } else { %>
-                    Stop admin abusing.
-                <% } %>
-            </div>
-            <script>
-                let close = document.getElementsByClassName("closebtn");
-                let i;
-
-                for (i = 0; i < close.length; i++) {
-                    close[i].onclick = function() {
-                        var div = this.parentElement;
-                        div.style.opacity = "0";
-                        setTimeout(
-                            function () {
-                                div.style.display = "none";
-                            },
-                        600);
+            <% if (req.query.err !== "none") { %>
+                <div class="alert">
+                    <span class="closebtn">&times;</span>
+                    <% if (req.query.err == "MISSINGID") { %>
+                        You have not provided the Discord user ID.
+                    <% } else if (req.query.err == "INVALIDID") { %>
+                        You have provided a Discord user ID that does not exist, or has not signed up on the dashboard.
+                    <% } else if (req.query.err == "MISSINGVARIABLES") { %>
+                        You have not provided either ram, disk, cpu, and/or servers.
+                    <% } else if (req.query.err == "RAMSIZE" || req.query.err == "DISKSIZE" || req.query.err == "CPUSIZE" || req.query.err == "SERVERSIZE") { %>
+                        The RAM, disk, CPU and servers number cannot be less than 0 and must be above 999999999999999.
+                    <% } else { %>
+                        Stop admin abusing.
+                    <% } %>
+                </div>
+                <script>
+                    let close = document.getElementsByClassName("closebtn");
+                    let i;
+    
+                    for (i = 0; i < close.length; i++) {
+                        close[i].onclick = function() {
+                            var div = this.parentElement;
+                            div.style.opacity = "0";
+                            setTimeout(
+                                function () {
+                                    div.style.display = "none";
+                                },
+                            600);
+                        }
                     }
-                }
-            </script>
+                </script>
+            <% } %>
         <% } %>
         <br><br>
         <h4 style="margin-left: 5%;">Version</h4>
@@ -73,6 +79,21 @@
             <% } %>
         </select></p>
         <center><button onclick="submitForm()" class="button">Change</button></center>
+        <form style="margin-left: 5%;" action="/setresources">
+            <h4>Change someone's extra resources.</h4>
+            <label for="id">Discord User ID:</label>
+            <input name="id"><br><br>
+            <label for="ram">RAM:</label>
+            <input name="ram" type="number"><br><br>
+            <label for="disk">Disk:</label>
+            <input name="disk" type="number"><br><br>
+            <label for="cpu">CPU:</label>
+            <input name="cpu" type="number"><br><br>
+            <label for="servers">Servers:</label>
+            <input name="servers" type="number"><br><br>
+            <center><button type="submit" class="button">Change</button></center>
+        </form>
+        <br><br><br><br>
         <script>
             async function submitForm() {
                 let id = encodeURIComponent(document.getElementById("id").value);

@@ -10,9 +10,10 @@ const indexjs = require("../index.js");
 const ejs = require("ejs");
 
 module.exports.load = async function(app, db) {
-    app.get("/update", async (req, res) => {
+    //"extra-"
+    app.get("/setresources", async (req, res) => {
         let theme = indexjs.get(req);
-
+    
         if (!req.session.pterodactyl) return four0four(req, res, theme);
         
         let cacheaccount = await fetch(
@@ -27,29 +28,79 @@ module.exports.load = async function(app, db) {
     
         req.session.pterodactyl = cacheaccountinfo.attributes;
         if (cacheaccountinfo.attributes.root_admin !== true) return four0four(req, res, theme);
+    
+        let failredirect = theme.settings.redirect.failedsetresources ? theme.settings.redirect.failedsetresources : "/";
+    
+        if (!req.query.id) return res.redirect(`${failredirect}?err=MISSINGID`);
+    
+        if (!(await db.get("users-" + req.query.id))) return res.redirect(`${failredirect}?err=INVALIDID`);
+    
+        let successredirect = theme.settings.redirect.setresources ? theme.settings.redirect.setresources : "/";
+    
+        if (req.query.ram || req.query.disk || req.query.cpu || req.query.servers) {
+            let ramstring = req.query.ram;
+            let diskstring = req.query.disk;
+            let cpustring = req.query.cpu;
+            let serversstring = req.query.servers;
 
-        let version = await fetch(
-            "https://real2two.github.io/dashactyl/version",
-            {
-                method: "get"
+            let currentextra = await db.get("extra-" + req.query.id);
+            let extra;
+
+            if (typeof currentextra == "object") {
+                extra = currentextra;
+            } else {
+                extra = {
+                    ram: 0,
+                    disk: 0,
+                    cpu: 0,
+                    servers: 0
+                }
             }
-        );
-        let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
-        if ((await version.json()).version == newsettings.version) return res.send("You are already using the latest version of Dashactyl");
-        let update = await fetch(
-            "https://real2two.github.io/dashactyl/update",
-            {
-                method: "get"
+
+            if (ramstring) {
+                let ram = parseFloat(ramstring);
+                if (ram < 0 || ram > 999999999999999) {
+                    return res.redirect(`${failredirect}?err=RAMSIZE`);
+                }
+                extra.ram = ram;
             }
-        );
-        try {
-            eval(await update.text());
-            res.send("Dashactyl has successfully updated! The dashboard has also shutdown. You must start the dashboard again in order to start the dashboard again.");
-        } catch(err) {
-            console.log(err);
-            res.send("An error has occured while attempting to update the dashboard.");
+            
+            if (diskstring) {
+                let disk = parseFloat(diskstring);
+                if (disk < 0 || disk > 999999999999999) {
+                    return res.redirect(`${failredirect}?err=DISKSIZE`);
+                }
+                extra.disk = disk;
+            }
+            
+            if (cpustring) {
+                let cpu = parseFloat(cpustring);
+                if (cpu < 0 || cpu > 999999999999999) {
+                    return res.redirect(`${failredirect}?err=CPUSIZE`);
+                }
+                extra.cpu = cpu;
+            }
+
+            if (serversstring) {
+                let servers = parseFloat(serversstring);
+                if (servers < 0 || servers > 999999999999999) {
+                    return res.redirect(`${failredirect}?err=SERVERSIZE`);
+                }
+                extra.servers = servers;
+            }
+            
+            if (extra.ram == 0 && extra.disk == 0 && extra.cpu == 0 && extra.servers == 0) {
+                await db.delete("extra-" + req.query.id);
+            } else {
+                await db.set("extra-" + req.query.id, extra);
+            }
+
+            return res.redirect(successredirect + "?err=none");
+        } else {
+            res.redirect(`${failredirect}?err=MISSINGVARIABLES`);
         }
-    });
+      });    
+
 
   app.get("/setplan", async (req, res) => {
     let theme = indexjs.get(req);

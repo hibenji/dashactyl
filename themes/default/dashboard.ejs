@@ -91,29 +91,29 @@
             <div class="column" style="background-color: transparent;">
                 <div class="card">
                     <h3>RAM</h3>
-                    <p><code><%= ram %>MB</code> / <code><%= packages.ram %>MB</code></p>
-                    <progress value="<%= ram %>" max="<%= packages.ram %>" style="width: 100%;"></progress>
+                    <p><code><%= ram %>MB</code> / <code><%= packages.ram + extraresources.ram %>MB</code></p>
+                    <progress value="<%= ram %>" max="<%= packages.ram + extraresources.ram %>" style="width: 100%;"></progress>
                 </div>
             </div>
             <div class="column" style="background-color: transparent;">
                 <div class="card">
                     <h3>Disk</h3>
-                    <p><code><%= disk %>MB</code> / <code><%= packages.disk %>MB</code></p>
-                    <progress value="<%= disk %>" max="<%= packages.disk %>" style="width: 100%;"></progress>
+                    <p><code><%= disk %>MB</code> / <code><%= packages.disk + extraresources.disk %>MB</code></p>
+                    <progress value="<%= disk %>" max="<%= packages.disk + extraresources.disk %>" style="width: 100%;"></progress>
                 </div>
             </div>
             <div class="column" style="background-color: transparent;">
                 <div class="card">
                     <h3>CPU</h3>
-                    <p><code><%= cpu %>%</code> / <code><%= packages.cpu %>%</code></p>
-                    <progress value="<%= cpu %>" max="<%= packages.cpu %>" style="width: 100%;"></progress>
+                    <p><code><%= cpu %>%</code> / <code><%= packages.cpu + extraresources.cpu %>%</code></p>
+                    <progress value="<%= cpu %>" max="<%= packages.cpu + extraresources.cpu %>" style="width: 100%;"></progress>
                 </div>
             </div>
             <div class="column" style="background-color: transparent;">
                 <div class="card">
                     <h3>Servers</h3>
-                    <p><code><%= servers %> server<%= servers == 1 ? "" : "s" %></code> / <code><%= packages.servers %> server<%= packages.ram == 1 ? "" : "s" %></code></p>
-                    <progress value="<%= servers %>" max="<%= packages.servers %>" style="width: 100%;"></progress>
+                    <p><code><%= servers %> server<%= servers == 1 ? "" : "s" %></code> / <code><%= packages.servers + extraresources.servers %> server<%= packages.ram + extraresources.servers == 1 ? "" : "s" %></code></p>
+                    <progress value="<%= servers %>" max="<%= packages.servers + extraresources.servers %>" style="width: 100%;"></progress>
                 </div>
             </div>
         </div>

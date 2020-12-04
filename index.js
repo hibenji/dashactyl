@@ -27,6 +27,12 @@ module.exports.renderdataeval =
       settings: newsettings,
       userinfo: req.session.userinfo,
       packagename: req.session.userinfo ? await db.get("package-" + req.session.userinfo.id) ? await db.get("package-" + req.session.userinfo.id) : newsettings.api.client.packages.default : null,
+      extraresources: !req.session.userinfo ? null : (await db.get("extra-" + req.session.userinfo.id) ? await db.get("extra-" + req.session.userinfo.id) : {
+        ram: 0,
+        disk: 0,
+        cpu: 0,
+        servers: 0
+      }),
       packages: req.session.userinfo ? newsettings.api.client.packages.list[await db.get("package-" + req.session.userinfo.id) ? await db.get("package-" + req.session.userinfo.id) : newsettings.api.client.packages.default] : null,
       pterodactyl: req.session.pterodactyl,
       theme: theme.name,

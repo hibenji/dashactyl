@@ -15,7 +15,9 @@
         "createserverdisabled": "/servers?err=disabled",
         "modifyserverdisabled": "/servers?err=disabled",
         "deleteserverdisabled": "/servers?err=disabled",
-        "regenpassword": "/dashboard"
+        "regenpassword": "/dashboard",
+        "setresources": "/admin",
+        "failedsetresources": "/admin"
     },
     "pages": {
         "dashboard": "dashboard.ejs",
