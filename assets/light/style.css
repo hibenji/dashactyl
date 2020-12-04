@@ -73,7 +73,7 @@ input {
 }
 
 code {
-    color: #FF9898;
+    color: #ff3232;
 }
 
 table {
@@ -154,13 +154,26 @@ body {
 }
 
 ::-webkit-input-placeholder { /* Edge */
-    color: #cfcfcf;
-  }
+  color: #cfcfcf;
+}
   
-  :-ms-input-placeholder { /* Internet Explorer */
-    color: #cfcfcf;
-  }
+:-ms-input-placeholder { /* Internet Explorer */
+  color: #cfcfcf;
+}
   
-  ::placeholder {
-    color: #cfcfcf;
-  }
+::placeholder {
+  color: #cfcfcf;
+}
+
+footer {
+  height: 70px;
+  background-color:#cfcfcf;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: black;
+  text-align: center;
+}

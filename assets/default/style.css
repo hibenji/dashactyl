@@ -164,3 +164,17 @@ body {
   ::placeholder {
     color: #cfcfcf;
   }
+
+  footer {
+    height: 70px;
+    background-color:#5b6168;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
+  }
