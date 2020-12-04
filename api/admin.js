@@ -10,7 +10,6 @@ const indexjs = require("../index.js");
 const ejs = require("ejs");
 
 module.exports.load = async function(app, db) {
-    //"extra-"
     app.get("/setresources", async (req, res) => {
         let theme = indexjs.get(req);
     
