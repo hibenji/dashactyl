@@ -31,7 +31,11 @@
           "modify": true,
           "delete": true
         },
-        "overresourcessuspend": false
+        "overresourcessuspend": false,
+        "renewsuspendsystem": {
+          "enabled": false,
+          "time": 2592000
+        }
       },
       "oauth2": {
         "id": "discord oauth2 application id",

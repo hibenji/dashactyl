@@ -17,7 +17,8 @@
         "deleteserverdisabled": "/servers?err=disabled",
         "regenpassword": "/dashboard",
         "setresources": "/admin",
-        "failedsetresources": "/admin"
+        "failedsetresources": "/admin",
+        "renewserver": "/servers"
     },
     "pages": {
         "dashboard": "dashboard.ejs",

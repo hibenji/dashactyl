@@ -40,6 +40,21 @@ module.exports.load = async function(app, db) {
     let theme = indexjs.get(req);
     res.redirect(theme.settings.redirect.regenpassword ? theme.settings.redirect.regenpassword : "/")
   });
+
+  app.get("/renew", async (req, res) => {
+    if (!req.session.pterodactyl) return res.send("Not logged in.")
+
+    if (!req.query.id) return res.send("Missing id.");
+
+    let theme = indexjs.get(req);
+
+    let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
+    if (newsettings.api.client.allow.renewsuspendsystem.enabled == true) {
+      return res.redirect(theme.settings.redirect.renewserver ? theme.settings.redirect.renewserver : "/");
+    } else {
+      res.send("This feature has not been enabled.");
+    }
+  });
 };
 
 function makeid(length) {
