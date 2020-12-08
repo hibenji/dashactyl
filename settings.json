@@ -1,13 +1,13 @@
 {
-  "version": "0.2.4",
+  "version": "0.2.5",
   "defaulttheme": "default",
   "website": {
     "port": 80,
-    "secret": "change this website session secret password"
+    "secret": "change this website session secret password, make sure to change this for your website's security"
   },
   "pterodactyl": {
     "domain": "pterodactyl panel domain",
-    "key": "pterodactyl panel admin api key"
+    "key": "pterodactyl panel admin api key with all read and wrties"
   },
   "database": "sqlite://database.sqlite",
   "api": {
@@ -15,6 +15,7 @@
        "bot": {
          "token": "bot token",
          "joinguild": {
+           "_comment": "The Discord bot must be in these servers and have invite permissions.",
            "enabled": false,
            "guildid": ["guild id", "another guild id"]
         }
@@ -39,9 +40,10 @@
         }
       },
       "oauth2": {
+        "_comment": "Go to https://discord.dev/ and create an application to set these up.",
         "id": "discord oauth2 application id",
         "secret": "discord oauth2 application secret",
-        "link": "discord oauth2 application link",
+        "link": "discord oauth2 application link without the '/callback'",
         "callbackpath": "/callback",
         "prompt": true
       },
@@ -126,6 +128,7 @@
       }
     },
     "arcio": {
+      "_comment": "You can make an arc.io widget on https://arc.io. You can get money using arc.io.",
       "enabled": false,
       "widgetid": "arc.io widget id here"
     }
