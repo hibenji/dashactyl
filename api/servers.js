@@ -137,7 +137,9 @@ module.exports.load = async function(app, db) {
           let newpterodactylinfo = req.session.pterodactyl;
           newpterodactylinfo.relationships.servers.data.push(serverinfotext);
           req.session.pterodactyl = newpterodactylinfo;
-          renew.set(serverinfotext.attributes.id);
+          if (settings.api.client.allow.renewsuspendsystem.enabled == true) {
+            renew.set(serverinfotext.attributes.id);
+          }
           return res.redirect(theme.settings.redirect.createserver ? theme.settings.redirect.createserver : "/");
         } else {
           res.redirect(`${redirectlink}?err=NOTANUMBER`);
@@ -281,7 +283,9 @@ module.exports.load = async function(app, db) {
       pterodactylinfo.relationships.servers.data = pterodactylinfo.relationships.servers.data.filter(server => server.attributes.id.toString() !== req.query.id);
       req.session.pterodactyl = pterodactylinfo;
 
-      renew.delete(req.query.id);
+      if (settings.api.client.allow.renewsuspendsystem.enabled == true) {
+        renew.delete(req.query.id);
+      }
 
       adminjs.suspend(req.session.userinfo.id);
   
