@@ -53,7 +53,8 @@
         "/updateinfo": 1,
         "/setplan": 2,
         "/admin": 1,
-        "/regen": 1
+        "/regen": 1,
+        "/renew": 1
       },
       "packages": {
         "default": "default",

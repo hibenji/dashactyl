@@ -36,8 +36,7 @@ module.exports.load = async function(app, db) {
             let theme = indexjs.get(req);
             
             renewalservers[req.query.id] = settings.api.client.allow.renewsuspendsystem.time;
-
-            indexjs.ratelimits(1);
+            
             await fetch(
                 settings.pterodactyl.domain + "/api/application/servers/" + req.query.id + "/unsuspend",
                 {
