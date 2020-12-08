@@ -30,7 +30,8 @@
           "create": true,
           "modify": true,
           "delete": true
-        }
+        },
+        "autosuspend": false
       },
       "oauth2": {
         "id": "discord oauth2 application id",

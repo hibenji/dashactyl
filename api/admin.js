@@ -7,6 +7,7 @@ if (settings.pterodactyl) if (settings.pterodactyl.domain) {
 const fetch = require('node-fetch');
 const fs = require("fs");
 const indexjs = require("../index.js");
+const adminjs = require("./admin.js");
 const ejs = require("ejs");
 
 module.exports.load = async function(app, db) {
@@ -94,6 +95,7 @@ module.exports.load = async function(app, db) {
                 await db.set("extra-" + req.query.id, extra);
             }
 
+            adminjs.suspend(req.query.id);
             return res.redirect(successredirect + "?err=none");
         } else {
             res.redirect(`${failredirect}?err=MISSINGVARIABLES`);
@@ -129,11 +131,13 @@ module.exports.load = async function(app, db) {
 
     if (!req.query.package) {
         await db.delete("package-" + req.query.id);
+        adminjs.suspend(req.query.id);
         return res.redirect(successredirect + "?err=none");
     } else {
         let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
         if (!newsettings.api.client.packages.list[req.query.package]) return res.redirect(`${failredirect}?err=INVALIDPACKAGE`);
         await db.set("package-" + req.query.id, req.query.package);
+        adminjs.suspend(req.query.id);
         return res.redirect(successredirect + "?err=none");
     }
   });
@@ -152,5 +156,84 @@ module.exports.load = async function(app, db) {
             };
             res.send(str);
         });
+    }
+
+    module.exports.suspend = async function(discordid) {
+        let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
+        if (newsettings.api.client.allow.autosuspend !== true) return;
+
+        indexjs.ratelimits(1);
+        let pterodactylid = await db.get("users-" + discordid);
+        let userinforeq = await fetch(
+            settings.pterodactyl.domain + "/api/application/users/" + pterodactylid + "?include=servers",
+            {
+              method: "get",
+              headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
+            }
+          );
+        if (await userinforeq.statusText == "Not Found") {
+            console.log("[WEBSITE] An error has occured while attempting to check if a user's server should be suspended.");
+            console.log("- Discord ID: " + discordid);
+            console.log("- Pterodactyl Panel ID: " + pterodactylid);
+            return;
+        }
+        let userinfo = JSON.parse(await userinforeq.text());
+
+        let packagename = await db.get("package-" + discordid);
+        let package = newsettings.api.client.packages.list[packagename ? packagename : newsettings.api.client.packages.default];
+
+        let extra = 
+            await db.get("extra-" + discordid) ?
+            await db.get("extra-" + discordid) :
+            {
+                ram: 0,
+                disk: 0,
+                cpu: 0,
+                servers: 0
+            };
+
+        let plan = {
+            ram: package.ram + extra.ram,
+            disk: package.disk + extra.disk,
+            cpu: package.cpu + extra.cpu,
+            servers: package.servers + extra.servers
+        }
+
+        let current = {
+            ram: 0,
+            disk: 0,
+            cpu: 0,
+            servers: userinfo.attributes.relationships.servers.data.length
+        }
+        for (let i = 0, len = userinfo.attributes.relationships.servers.data.length; i < len; i++) {
+            current.ram = current.ram + userinfo.attributes.relationships.servers.data[i].attributes.limits.memory;
+            current.disk = current.disk + userinfo.attributes.relationships.servers.data[i].attributes.limits.disk;
+            current.cpu = current.cpu + userinfo.attributes.relationships.servers.data[i].attributes.limits.cpu;
+        };
+
+        indexjs.ratelimits(userinfo.attributes.relationships.servers.data.length);
+        if (current.ram > plan.ram || current.disk > plan.disk || current.cpu > plan.cpu || current.servers > plan.servers) {
+            for (let i = 0, len = userinfo.attributes.relationships.servers.data.length; i < len; i++) {
+                let suspendid = userinfo.attributes.relationships.servers.data[i].attributes.id;
+                await fetch(
+                    settings.pterodactyl.domain + "/api/application/servers/" + suspendid + "/suspend",
+                    {
+                      method: "post",
+                      headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
+                    }
+                  );
+            }
+        } else {
+            for (let i = 0, len = userinfo.attributes.relationships.servers.data.length; i < len; i++) {
+                let suspendid = userinfo.attributes.relationships.servers.data[i].attributes.id;
+                await fetch(
+                    settings.pterodactyl.domain + "/api/application/servers/" + suspendid + "/unsuspend",
+                    {
+                      method: "post",
+                      headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
+                    }
+                  );
+            }
+        };
     }
 };

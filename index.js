@@ -191,7 +191,7 @@ app.get("*", async (req, res) => {
   });
 });
 
-module.exports.get = function get(req) {
+module.exports.get = function(req) {
   let defaulttheme = JSON.parse(fs.readFileSync("./settings.json")).defaulttheme;
   let tname = encodeURIComponent(getCookie(req, "theme"));
   let name = (
@@ -210,6 +210,19 @@ module.exports.get = function get(req) {
     name: name
   };
 };
+
+module.exports.ratelimits = async function(length) {
+  if (cache == true) return setTimeout(
+    indexjs.ratelimits
+    , 1
+  );
+  cache = true;
+  setTimeout(
+    async function() {
+      cache = false;
+    }, length * 1000
+  )
+}
 
 // Get a cookie.
 function getCookie(req, cname) {

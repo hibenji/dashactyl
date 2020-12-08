@@ -1,6 +1,7 @@
 const settings = require("../settings.json");
 const fetch = require('node-fetch');
 const indexjs = require("../index.js");
+const adminjs = require("./admin.js");
 const fs = require("fs");
 
 if (settings.pterodactyl) if (settings.pterodactyl.domain) {
@@ -57,12 +58,11 @@ module.exports.load = async function(app, db) {
         let ram2 = 0;
         let disk2 = 0;
         let cpu2 = 0;
-        let servers2 = 0;
+        let servers2 = req.session.pterodactyl.relationships.servers.data.length;
         for (let i = 0, len = req.session.pterodactyl.relationships.servers.data.length; i < len; i++) {
           ram2 = ram2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.memory;
           disk2 = disk2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.disk;
           cpu2 = cpu2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.cpu;
-          servers2++;
         };
 
         if (servers2 >= package.servers + extra.servers) return res.redirect(`${redirectlink}?err=TOOMUCHSERVERS`);
@@ -183,17 +183,27 @@ module.exports.load = async function(app, db) {
           cpu2 = cpu2 + pterorelationshipsserverdata[i].attributes.limits.cpu;
         }
         let attemptegg = null;
-        let attemptname = null;
+        //let attemptname = null;
         
         for (let [name, value] of Object.entries(newsettings.api.client.eggs)) {
           if (value.info.egg == checkexist[0].attributes.egg) {
             attemptegg = newsettings.api.client.eggs[name];
-            attemptname = name;
+            //attemptname = name;
           };
         };
         let egginfo = attemptegg ? attemptegg : null;
   
         if (!egginfo) return res.redirect(`${redirectlink}?id=${req.query.id}&err=MISSINGEGG`);
+
+        let extra = 
+          await db.get("extra-" + req.session.userinfo.id) ?
+          await db.get("extra-" + req.session.userinfo.id) :
+          {
+            ram: 0,
+            disk: 0,
+            cpu: 0,
+            servers: 0
+          };
   
         if (ram2 + ram > package.ram + extra.ram) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDRAM&num=${package.ram + extra.ram - ram2}`);
         if (disk2 + disk > package.disk + extra.disk) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDDISK&num=${package.disk + extra.disk - disk2}`);
@@ -232,6 +242,7 @@ module.exports.load = async function(app, db) {
         pterorelationshipsserverdata.push(text);
         req.session.pterodactyl.relationships.servers.data = pterorelationshipsserverdata;
         let theme = indexjs.get(req);
+        adminjs.suspend(req.session.userinfo.id);
         res.redirect(theme.settings.redirect.modifyserver ? theme.settings.redirect.modifyserver : "/");
       } else {
         res.redirect(`${redirectlink}?id=${req.query.id}&err=MISSINGVARIABLE`);
@@ -267,6 +278,8 @@ module.exports.load = async function(app, db) {
       let pterodactylinfo = req.session.pterodactyl;
       pterodactylinfo.relationships.servers.data = pterodactylinfo.relationships.servers.data.filter(server => server.attributes.id.toString() !== req.query.id);
       req.session.pterodactyl = pterodactylinfo;
+
+      adminjs.suspend(req.session.userinfo.id);
   
       return res.redirect(theme.settings.redirect.deleteserver ? theme.settings.redirect.deleteserver : "/");
     } else {
