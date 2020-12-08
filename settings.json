@@ -7,7 +7,7 @@
   },
   "pterodactyl": {
     "domain": "pterodactyl panel domain",
-    "key": "pterodactyl panel admin api key with all read and wrties"
+    "key": "pterodactyl panel admin api key with all read and writes"
   },
   "database": "sqlite://database.sqlite",
   "api": {
