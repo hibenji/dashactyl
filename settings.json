@@ -33,8 +33,9 @@
         },
         "overresourcessuspend": false,
         "renewsuspendsystem": {
+          "_comment": "This feature requires a restart in order to work. Also, this requires every server to start suspended, or else this feature would not work for some servers.",
           "enabled": false,
-          "time": 2592000
+          "time": 3600
         }
       },
       "oauth2": {

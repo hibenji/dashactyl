@@ -2,6 +2,7 @@ const settings = require("../settings.json");
 const fetch = require('node-fetch');
 const indexjs = require("../index.js");
 const adminjs = require("./admin.js");
+const renew = require("./renewal.js");
 const fs = require("fs");
 
 if (settings.pterodactyl) if (settings.pterodactyl.domain) {
@@ -136,6 +137,7 @@ module.exports.load = async function(app, db) {
           let newpterodactylinfo = req.session.pterodactyl;
           newpterodactylinfo.relationships.servers.data.push(serverinfotext);
           req.session.pterodactyl = newpterodactylinfo;
+          renew.set(serverinfotext.attributes.id);
           return res.redirect(theme.settings.redirect.createserver ? theme.settings.redirect.createserver : "/");
         } else {
           res.redirect(`${redirectlink}?err=NOTANUMBER`);
@@ -278,6 +280,8 @@ module.exports.load = async function(app, db) {
       let pterodactylinfo = req.session.pterodactyl;
       pterodactylinfo.relationships.servers.data = pterodactylinfo.relationships.servers.data.filter(server => server.attributes.id.toString() !== req.query.id);
       req.session.pterodactyl = pterodactylinfo;
+
+      renew.delete(req.query.id);
 
       adminjs.suspend(req.session.userinfo.id);
   

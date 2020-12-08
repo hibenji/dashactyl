@@ -211,6 +211,10 @@ module.exports.get = function(req) {
   };
 };
 
+module.exports.islimited = async function() {
+  return cache == true ? false : true;
+}
+
 module.exports.ratelimits = async function(length) {
   if (cache == true) return setTimeout(
     indexjs.ratelimits
