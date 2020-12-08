@@ -1,5 +1,6 @@
 const indexjs = require("../index.js");
 const ejs = require("ejs");
+const chalk = require("chalk");
 
 module.exports.load = async function(app, db) {
   app.get("/arc-sw.js", async (req, res) => {
@@ -16,7 +17,7 @@ module.exports.load = async function(app, db) {
       async function (err, str) {
         delete req.session.newaccount;
         if (err) {
-          console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
+          console.log(`[${chalk.blue("WEBSITE")}] An error has occured on path ${req._parsedUrl.pathname}:`);
           console.log(err);
           return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
         };
