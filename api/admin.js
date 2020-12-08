@@ -162,6 +162,16 @@ module.exports.load = async function(app, db) {
         let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
         if (newsettings.api.client.allow.overresourcessuspend !== true) return;
 
+        let canpass = await indexjs.islimited();
+        if (canpass == false) {
+            setTimeout(
+                async function() {
+                    adminjs.suspend(discordid);
+                }, 1
+            )
+            return;
+        };
+
         indexjs.ratelimits(1);
         let pterodactylid = await db.get("users-" + discordid);
         let userinforeq = await fetch(
