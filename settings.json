@@ -31,7 +31,7 @@
           "modify": true,
           "delete": true
         },
-        "autosuspend": false
+        "overresourcessuspend": false
       },
       "oauth2": {
         "id": "discord oauth2 application id",

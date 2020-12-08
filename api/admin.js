@@ -160,7 +160,7 @@ module.exports.load = async function(app, db) {
 
     module.exports.suspend = async function(discordid) {
         let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
-        if (newsettings.api.client.allow.autosuspend !== true) return;
+        if (newsettings.api.client.allow.overresourcessuspend !== true) return;
 
         indexjs.ratelimits(1);
         let pterodactylid = await db.get("users-" + discordid);
