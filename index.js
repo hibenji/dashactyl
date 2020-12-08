@@ -4,6 +4,7 @@
 
 const fs = require("fs");
 const fetch = require('node-fetch');
+const chalk = require("chalk");
 
 // Load settings.
 
@@ -47,7 +48,7 @@ const Keyv = require("keyv");
 const db = new Keyv(settings.database);
 
 db.on('error', err => {
-  console.log("[DATABASE] An error has occured when attempting to access the database.")
+  console.log(chalk.red("[DATABASE] An error has occured when attempting to access the database."))
 });
 
 module.exports.db = db;
@@ -79,7 +80,7 @@ app.use(express.json({
 }));
 
 const listener = app.listen(settings.website.port, function() {
-  console.log("[WEBSITE] The dashboard has successfully loaded on port " + listener.address().port + ".");
+  console.log(chalk.greed("[WEBSITE] The dashboard has successfully loaded on port " + listener.address().port + "."));
 });
 
 var cache = false;
@@ -124,7 +125,7 @@ app.get("*", async (req, res) => {
       delete req.session.password;
       if (!req.session.userinfo || !req.session.pterodactyl) {
         if (err) {
-          console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
+          console.log(chalk.red(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`));
           console.log(err);
           return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
         };
@@ -140,7 +141,7 @@ app.get("*", async (req, res) => {
       );
       if (await cacheaccount.statusText == "Not Found") {
         if (err) {
-          console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
+          console.log(chalk.red(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`));
           console.log(err);
           return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
         };
@@ -151,7 +152,7 @@ app.get("*", async (req, res) => {
       req.session.pterodactyl = cacheaccountinfo.attributes;
       if (cacheaccountinfo.attributes.root_admin !== true) {
         if (err) {
-          console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
+          console.log(chalk.red(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`));
           console.log(err);
           return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
         };
@@ -183,7 +184,7 @@ app.get("*", async (req, res) => {
     delete req.session.newaccount;
     delete req.session.password;
     if (err) {
-      console.log(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`);
+      console.log(chalk.red(`[WEBSITE] An error has occured on path ${req._parsedUrl.pathname}:`));
       console.log(err);
       return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
     };
