@@ -1,5 +1,5 @@
 {
-  "version": "0.2.5",
+  "version": "0.2.6",
   "defaulttheme": "default",
   "website": {
     "port": 80,
@@ -69,9 +69,12 @@
           }
         }
       },
-      "locations": {
-        "Location Name": 1
-      },
+      "1": {
+        "name": "Location Name",
+
+        "_comment": "Make 'package' be null to allow anyone with enough resources in their plan to create a server with this location. Also, make the 'package' variable an array, like [], with the location names with quotes to make a user be required to have a plan in order to use the package.",
+        "package": null
+        }
       "eggs": {
         "paper": {
           "display": "Paper",

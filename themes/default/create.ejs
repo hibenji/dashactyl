@@ -35,6 +35,8 @@
                     Your server name must be less than <b>255</b> characters.
                 <% } else if (req.query.err == "TOOMUCHSERVERS") { %>
                     The server could not be created because you have requested to create a server that exceeds your plan.
+                <% } else if (req.query.err == "PREMIUMLOCATION") { %>
+                    You cannot make a server on the selected location on your current package.
                 <% } else { %>
                     <% if (req.query.num) { %>
                         <% if (!isNaN(parseFloat(req.query.num))) { %>
@@ -93,7 +95,7 @@
             <p style="margin-left: 5%;">Name: <input id="name"></p>
             <p style="margin-left: 5%;">Location:&nbsp;<select class="select-selected" id="location">
                 <% for (let [name, value] of Object.entries(settings.api.client.locations)) { %>
-                    <option value="<%= value %>"><%= name %></option>
+                    <option value="<%= name %>"><%= value.name %></option>
                 <% } %>
             </select></p>
             <p style="margin-left: 5%;">Egg:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select class="select-selected" id="egg">

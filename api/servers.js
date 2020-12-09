@@ -74,14 +74,11 @@ module.exports.load = async function(app, db) {
   
         let location = req.query.location;
 
-        let continuelocation = false;
-        for (let [name, value] of Object.entries(newsettings.api.client.locations)) {
-          if (location == value.toString()) {
-            continuelocation = true;
-          }
-        }
+        if (Object.entries(newsettings.api.client.locations).filter(vname => vname[0] == location).length !== 1) return res.redirect(`${redirectlink}?err=INVALIDLOCATION`);
 
-        if (continuelocation == false) return res.redirect(`${redirectlink}?err=INVALIDLOCATION`);
+        let requiredpackage = Object.entries(newsettings.api.client.locations).filter(vname => vname[0] == location)[0][1].package;
+        if (requiredpackage) if (!requiredpackage.includes(packagename ? packagename : newsettings.api.client.packages.default)) return res.redirect(`${redirectlink}?err=PREMIUMLOCATION`);
+
 
         let egg = req.query.egg;
   
