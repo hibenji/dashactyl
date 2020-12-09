@@ -100,47 +100,47 @@ module.exports.load = async function(app, db) {
         } else {
             res.redirect(`${failredirect}?err=MISSINGVARIABLES`);
         }
-      });    
+    });
 
 
-  app.get("/setplan", async (req, res) => {
-    let theme = indexjs.get(req);
+    app.get("/setplan", async (req, res) => {
+        let theme = indexjs.get(req);
 
-    if (!req.session.pterodactyl) return four0four(req, res, theme);
-    
-    let cacheaccount = await fetch(
-        settings.pterodactyl.domain + "/api/application/users/" + (await db.get("users-" + req.session.userinfo.id)) + "?include=servers",
-        {
-          method: "get",
-          headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
+        if (!req.session.pterodactyl) return four0four(req, res, theme);
+        
+        let cacheaccount = await fetch(
+            settings.pterodactyl.domain + "/api/application/users/" + (await db.get("users-" + req.session.userinfo.id)) + "?include=servers",
+            {
+            method: "get",
+            headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${settings.pterodactyl.key}` }
+            }
+        );
+        if (await cacheaccount.statusText == "Not Found") return four0four(req, res, theme);
+        let cacheaccountinfo = JSON.parse(await cacheaccount.text());
+
+        req.session.pterodactyl = cacheaccountinfo.attributes;
+        if (cacheaccountinfo.attributes.root_admin !== true) return four0four(req, res, theme);
+
+        let failredirect = theme.settings.redirect.failedsetplan ? theme.settings.redirect.failedsetplan : "/";
+
+        if (!req.query.id) return res.redirect(`${failredirect}?err=MISSINGID`);
+
+        if (!(await db.get("users-" + req.query.id))) return res.redirect(`${failredirect}?err=INVALIDID`);
+
+        let successredirect = theme.settings.redirect.setplan ? theme.settings.redirect.setplan : "/";
+
+        if (!req.query.package) {
+            await db.delete("package-" + req.query.id);
+            adminjs.suspend(req.query.id);
+            return res.redirect(successredirect + "?err=none");
+        } else {
+            let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
+            if (!newsettings.api.client.packages.list[req.query.package]) return res.redirect(`${failredirect}?err=INVALIDPACKAGE`);
+            await db.set("package-" + req.query.id, req.query.package);
+            adminjs.suspend(req.query.id);
+            return res.redirect(successredirect + "?err=none");
         }
-    );
-    if (await cacheaccount.statusText == "Not Found") return four0four(req, res, theme);
-    let cacheaccountinfo = JSON.parse(await cacheaccount.text());
-
-    req.session.pterodactyl = cacheaccountinfo.attributes;
-    if (cacheaccountinfo.attributes.root_admin !== true) return four0four(req, res, theme);
-
-    let failredirect = theme.settings.redirect.failedsetplan ? theme.settings.redirect.failedsetplan : "/";
-
-    if (!req.query.id) return res.redirect(`${failredirect}?err=MISSINGID`);
-
-    if (!(await db.get("users-" + req.query.id))) return res.redirect(`${failredirect}?err=INVALIDID`);
-
-    let successredirect = theme.settings.redirect.setplan ? theme.settings.redirect.setplan : "/";
-
-    if (!req.query.package) {
-        await db.delete("package-" + req.query.id);
-        adminjs.suspend(req.query.id);
-        return res.redirect(successredirect + "?err=none");
-    } else {
-        let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
-        if (!newsettings.api.client.packages.list[req.query.package]) return res.redirect(`${failredirect}?err=INVALIDPACKAGE`);
-        await db.set("package-" + req.query.id, req.query.package);
-        adminjs.suspend(req.query.id);
-        return res.redirect(successredirect + "?err=none");
-    }
-  });
+    });
 
     async function four0four(req, res, theme) {
         ejs.renderFile(
@@ -154,6 +154,7 @@ module.exports.load = async function(app, db) {
                 console.log(err);
                 return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
             };
+            res.status(404);
             res.send(str);
         });
     }

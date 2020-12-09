@@ -12,6 +12,10 @@
   "database": "sqlite://database.sqlite",
   "api": {
     "client": {
+       "api": {
+         "enabled": false,
+         "code": "api token here, anyone who has access to this token can ran administrator settings"
+       },
        "bot": {
          "token": "bot token",
          "joinguild": {

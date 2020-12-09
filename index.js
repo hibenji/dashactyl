@@ -129,6 +129,7 @@ app.get("*", async (req, res) => {
           console.log(err);
           return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
         };
+        res.status(404);
         return res.send(str);
       };
 
@@ -171,6 +172,7 @@ app.get("*", async (req, res) => {
           console.log(err);
           return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
         };
+        res.status(404);
         res.send(str);
       });
     });
@@ -188,6 +190,7 @@ app.get("*", async (req, res) => {
       console.log(err);
       return res.send("An error has occured while attempting to load this page. Please contact an administrator to fix this.");
     };
+    res.status(404);
     res.send(str);
   });
 });
