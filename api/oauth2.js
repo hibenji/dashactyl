@@ -4,7 +4,7 @@ const settings = require("../settings.json");
 if (settings.api) {
   if (settings.api.client) {
       if (settings.api.client.oauth2) {
-          if (settings.api.client.oauth2.link) {
+          if (settings.api.client.oauth2.l.signupink) {
               if (settings.api.client.oauth2.link.slice(-1) == "/") settings.api.client.oauth2.link = settings.api.client.oauth2.link.slice(0, -1);
           }
           if (settings.api.client.oauth2.callbackpath) {
@@ -112,7 +112,7 @@ module.exports.load = async function(app, db) {
         if (!await db.get("users-" + userinfo.id)) {
           if (newsettings.api.client.allow.newusers == true) {
             let genpassword = null;
-            if (typeof newsettings.api.client.passwordgenerator.signup == true) genpassword = makeid(newsettings.api.client.passwordgenerator["length"]);
+            if (newsettings.api.client.passwordgenerator.signup == true) genpassword = makeid(newsettings.api.client.passwordgenerator["length"]);
             let accountjson = await fetch(
               settings.pterodactyl.domain + "/api/application/users",
               {
