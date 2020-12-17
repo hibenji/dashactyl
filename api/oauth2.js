@@ -3,14 +3,13 @@
 const settings = require("../settings.json");
 if (settings.api) {
   if (settings.api.client) {
-      if (settings.api.client.oauth2) {
-          if (settings.api.client.oauth2.l.signupink) {
-              if (settings.api.client.oauth2.link.slice(-1) == "/") settings.api.client.oauth2.link = settings.api.client.oauth2.link.slice(0, -1);
-          }
-          if (settings.api.client.oauth2.callbackpath) {
-              if (settings.api.client.oauth2.callbackpath.slice(0, 1) !== "/") settings.api.client.oauth2.callbackpath = "/" + settings.api.client.oauth2.callbackpath;
-          }
-      };
+    if (settings.api.client.oauth2) 
+      if (settings.api.client.oauth2.link)
+        if (settings.api.client.oauth2.link.slice(-1) == "/")
+          settings.api.client.oauth2.link = settings.api.client.oauth2.link.slice(0, -1);
+      if (settings.api.client.oauth2.callbackpath) 
+        if (settings.api.client.oauth2.callbackpath.slice(0, 1) !== "/")
+          settings.api.client.oauth2.callbackpath = "/" + settings.api.client.oauth2.callbackpath;
   };
 };
 

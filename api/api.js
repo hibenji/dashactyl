@@ -14,6 +14,31 @@ module.exports.load = async function(app, db) {
     );
   });
 
+  app.get("/api/userinfo", async (req, res) => {
+    let settings = await check(req, res);
+    if (!settings) return;
+
+    if (!req.query.id) return res.send({status: "missing id"});
+
+    if (!(await db.get("users-" + req.query.id))) return res.send({status: "invalid id"});
+
+    let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
+    
+    let packagename = await db.get("package-" + req.query.id);
+    let package = newsettings.api.client.packages.list[packagename ? packagename : newsettings.api.client.packages.default];
+    package["name"] = packagename;
+
+    res.send({
+      package: package,
+      extra: await db.get("extra-" + req.query.id) ? await db.get("extra-" + req.query.id) : {
+        ram: 0,
+        disk: 0,
+        cpu: 0,
+        servers: 0
+      }
+    });
+  });
+
   app.post("/api/setplan", async (req, res) => {
     let settings = await check(req, res);
     if (!settings) return;
