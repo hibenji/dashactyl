@@ -16,11 +16,14 @@ npm install
 ---  
 You will need to edit `settings.yml` and `./themes/default/pages.json` in order to change the customization options.
 # Documentation
-Here's a ~~community made~~ documentation a friend made for me. [https://josh0086.gitbook.io/dashactyl/](https://josh0086.gitbook.io/dashactyl/)
 | Community Documentation |
 | ----------------------- |
-| https://github.com/J0shh/dashactyl-installer |
+| https://josh0086.gitbook.io/dashactyl/ |
 | https://docs.arkhost.xyz/ |
+
+| Community Installation Scripts |
+| ------------------------------ |
+| https://github.com/J0shh/dashactyl-installer |
 # Copyright
 You may not claim this work as your own unless given explicit permission from the staff team.  
 You may not resell this product in any way shape or form unless you are selling the products made using this product.  
