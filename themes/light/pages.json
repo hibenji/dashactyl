@@ -43,7 +43,7 @@
             "title": "Dashactyl - Home",
             "name": "Dashactyl",
             "topmsg": "Dashactyl",
-            "bottommsg": "An dashboard addition to the Pterodactyl Panel.",
+            "bottommsg": "A dashboard addition to the Pterodactyl Panel.",
             "buttontext": {
                 "loggedin": {
                     "text": "Dashboard",
