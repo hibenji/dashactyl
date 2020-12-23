@@ -103,11 +103,13 @@
                 window.location.href = "/setplan?id=" + id + "&package=" + packagename
             }
         </script>
-        <footer>
-            <p style="padding: 10px;">
-                <!-- Please don't remove this footer! -->
-                Dashactyl - Developed and owned by Sirv Development.
-            </p>
-        </footer>
+        <% if (extra.footerad == true) { %>
+            <footer>
+                <p style="padding: 10px;">
+                    
+                    Dashactyl - Developed and owned by Sirv Development.
+                </p>
+            </footer>
+        <% } %>
     </body>
 </html>

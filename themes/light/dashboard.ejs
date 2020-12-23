@@ -120,11 +120,13 @@
         <br><br><br>
         <p><a href="#" style="margin-left: 5%;" onclick="document.cookie = 'theme=default'; window.location.reload();">Use dark theme.</a></p>
         <br><br><br><br>
-        <footer>
-            <p style="padding: 10px;">
-                <!-- Please don't remove this footer! -->
-                Dashactyl - Developed and owned by Sirv Development.
-            </p>
-        </footer>
+        <% if (extra.footerad == true) { %>
+            <footer>
+                <p style="padding: 10px;">
+                    
+                    Dashactyl - Developed and owned by Sirv Development.
+                </p>
+            </footer>
+        <% } %>
     </body>
 </html>
