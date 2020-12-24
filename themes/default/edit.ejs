@@ -30,14 +30,16 @@
                 <% } else if (req.query.err == "ERRORONMODIFY") { %>
                     There has been an error while attempting to modifying your server. Please alert an administrator to fix this problem.
                 <% } else if (req.query.err == "MISSINGEGG") { %>
-                    The server type for this server is not registered as a valid server type, therefore your server's RAM, disk and/or CPU could not be changed.
+                    The server type for this server is not registered as a valid server type, therefore your server's RAM, SWAP, disk and/or CPU could not be changed.
                 <% } else { %>
                     <% if (req.query.num) { %>
                         <% if (!isNaN(parseFloat(req.query.num))) { %>
-                            <% if (req.query.err == "TOOLITTLERAM" || req.query.err == "TOOLITTLEDISK" || req.query.err == "TOOLITTLECPU") { %>
+                            <% if (req.query.err == "TOOLITTLERAM" || req.query.err == "TOOLITTLESWAP" || req.query.err == "TOOLITTLEDISK" || req.query.err == "TOOLITTLECPU") { %>
                                 You must make a server with at least <b><%= req.query.num %></b>
                                 <% if (req.query.err.slice(-3) == "RAM") { %>
                                     MB RAM
+                                <% if (req.query.err.slice(-3) == "SWAP") { %>
+                                    MB SWAP
                                 <% } else if (req.query.err.slice(-4) == "DISK") { %>
                                     MB disk
                                 <% } else { // CPU %>
@@ -54,7 +56,7 @@
                                     % CPU
                                 <% } %>
                                 on the server.
-                            <% } else if (req.query.err == "EXCEEDRAM" || req.query.err == "EXCEEDDISK" || req.query.err == "EXCEEDCPU") { %>
+                            <% } else if (req.query.err == "EXCEEDRAM" || req.query.err == "EXCEEDSWAP" || req.query.err == "EXCEEDDISK" || req.query.err == "EXCEEDCPU") { %>
                                 The server could not be modified because you have requested to modified a server that exceeds your plan.
                             <% } else { %>
                                 I won't mind to add a little easter egg here. :)
@@ -104,6 +106,7 @@
                         <option><%= egginfo %></option>
                     </select></p>
                     <p style="margin-left: 5%;">RAM:&nbsp;&nbsp;&nbsp;<input id="ram" value="<%= serverinfo.attributes.limits.memory %>"></p>
+                    <p style="margin-left: 5%;">SWAP:&nbsp;&nbsp;&nbsp;<input id="swap" value="<%= serverinfo.attributes.limits.swap %>"></p>
                     <p style="margin-left: 5%;">Disk:&nbsp;&nbsp;&nbsp;<input id="disk" value="<%= serverinfo.attributes.limits.disk %>"></p>
                     <p style="margin-left: 5%;">CPU:&nbsp;&nbsp;&nbsp;<input id="cpu" value="<%= serverinfo.attributes.limits.cpu %>"></p>
                     <center>
@@ -114,9 +117,10 @@
                 <script>
                     async function submitForm() {
                         let ram = encodeURIComponent(document.getElementById("ram").value);
+                        let swap = encodeURIComponent(document.getElementById("swap").value);
                         let disk = encodeURIComponent(document.getElementById("disk").value);
                         let cpu = encodeURIComponent(document.getElementById("cpu").value);
-                        document.location.href = `/modify?id=<%= req.query.id %>&ram=${ram}&disk=${disk}&cpu=${cpu}`;
+                        document.location.href = `/modify?id=<%= req.query.id %>&ram=${ram}&swap=${swap}&disk=${disk}&cpu=${cpu}`;
                     };
                 </script>
             <% } else { %>

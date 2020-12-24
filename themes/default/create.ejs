@@ -28,7 +28,7 @@
                 <% if (req.query.err == "MISSINGVARIABLE") { %>
                     You have not filled out all of the server information.
                 <% } else if (req.query.err == "NOTANUMBER") { %>
-                    RAM, disk and CPU must be a number.
+                    RAM, SWAP, disk and CPU must be a number.
                 <% } else if (req.query.err == "ERRORONCREATE") { %>
                     There has been an error while attempting to create your server. Please alert an administrator to fix this problem.
                 <% } else if (req.query.err == "BIGSERVERNAME") { %>
@@ -40,27 +40,31 @@
                 <% } else { %>
                     <% if (req.query.num) { %>
                         <% if (!isNaN(parseFloat(req.query.num))) { %>
-                            <% if (req.query.err == "TOOLITTLERAM" || req.query.err == "TOOLITTLEDISK" || req.query.err == "TOOLITTLECPU") { %>
+                            <% if (req.query.err == "TOOLITTLERAM" || req.query.err == "TOOLITTLESWAP" || req.query.err == "TOOLITTLEDISK" || req.query.err == "TOOLITTLECPU") { %>
                                 You must make a server with at least <b><%= req.query.num %></b>
                                 <% if (req.query.err.slice(-3) == "RAM") { %>
                                     MB RAM
+                                <% if (req.query.err.slice(-3) == "SWAP") { %>
+                                    MB SWAP
                                 <% } else if (req.query.err.slice(-4) == "DISK") { %>
                                     MB disk
                                 <% } else { // CPU %>
                                     % CPU
                                 <% } %>
                                 if you want to create a server with the server type you have selected.
-                            <% } else if (req.query.err == "TOOMUCHRAM" || req.query.err == "TOOMUCHDISK" || req.query.err == "TOOMUCHCPU") { %>
+                            <% } else if (req.query.err == "TOOMUCHRAM" || req.query.err == "TOOMUCHSWAP" || req.query.err == "TOOMUCHDISK" || req.query.err == "TOOMUCHCPU") { %>
                                 With the selected server type, you can have a maximum of <b><%= req.query.num %></b>
                                 <% if (req.query.err.slice(-3) == "RAM") { %>
                                     MB RAM
+                                <% if (req.query.err.slice(-3) == "SWAP") { %>
+                                    MB SWAP
                                 <% } else if (req.query.err.slice(-4) == "DISK") { %>
                                     MB disk
                                 <% } else { // CPU %>
                                     % CPU
                                 <% } %>
                                 on the server.
-                            <% } else if (req.query.err == "EXCEEDRAM" || req.query.err == "EXCEEDDISK" || req.query.err == "EXCEEDCPU") { %>
+                            <% } else if (req.query.err == "EXCEEDRAM" || req.query.err == "EXCEEDSWAP" || req.query.err == "EXCEEDDISK" || req.query.err == "EXCEEDCPU") { %>
                                 The server could not be created because you have requested to create a server that exceeds your plan.
                             <% } else { %>
                                 I won't mind to add a little easter egg here. :)
@@ -104,6 +108,7 @@
                 <% } %>
             </select></p>
             <p style="margin-left: 5%;">RAM:&nbsp;&nbsp;&nbsp;<input id="ram"></p>
+            <p style="margin-left: 5%;">SWAP:&nbsp;&nbsp;&nbsp;<input id="swap"></p>
             <p style="margin-left: 5%;">Disk:&nbsp;&nbsp;&nbsp;&nbsp;<input id="disk"></p>
             <p style="margin-left: 5%;">CPU:&nbsp;&nbsp;&nbsp;<input id="cpu"></p>
             <center>
@@ -115,10 +120,11 @@
                 let name = encodeURIComponent(document.getElementById("name").value);
                 let egg = encodeURIComponent(document.getElementById("egg").value);
                 let ram = encodeURIComponent(document.getElementById("ram").value);
+                let swap = encodeURIComponent(document.getElementById("swap").value);
                 let disk = encodeURIComponent(document.getElementById("disk").value);
                 let cpu = encodeURIComponent(document.getElementById("cpu").value);
                 let location = encodeURIComponent(document.getElementById("location").value);
-                document.location.href = `/create?name=${name}&egg=${egg}&ram=${ram}&disk=${disk}&cpu=${cpu}&location=${location}`;
+                document.location.href = `/create?name=${name}&egg=${egg}&ram=${ram}&swap=${swap}&disk=${disk}&cpu=${cpu}&location=${location}`;
             };
         </script>
         <br><br><br><br>

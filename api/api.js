@@ -32,6 +32,7 @@ module.exports.load = async function(app, db) {
       package: package,
       extra: await db.get("extra-" + req.query.id) ? await db.get("extra-" + req.query.id) : {
         ram: 0,
+        swap:0 ,
         disk: 0,
         cpu: 0,
         servers: 0
@@ -72,8 +73,9 @@ module.exports.load = async function(app, db) {
 
     if (!(await db.get("users-" + req.body.id))) res.send({status: "invalid id"});
 
-    if (typeof req.body.ram == "number" || typeof req.body.disk == "number" || typeof req.body.cpu == "number" || typeof req.body.servers == "number") {
+    if (typeof req.body.ram == "number" || typeof req.body.swap == "number" || typeof req.body.disk == "number" || typeof req.body.cpu == "number" || typeof req.body.servers == "number") {
       let ram = req.body.ram;
+      let swap = req.body.swap;
       let disk = req.body.disk;
       let cpu = req.body.cpu;
       let servers = req.body.servers;
@@ -86,6 +88,7 @@ module.exports.load = async function(app, db) {
       } else {
         extra = {
           ram: 0,
+          swap: 0,
           disk: 0,
           cpu: 0,
           servers: 0
@@ -97,6 +100,13 @@ module.exports.load = async function(app, db) {
           return res.send({status: "ram size"});
         }
         extra.ram = ram;
+      }
+
+      if (typeof swap == "number") {
+        if (swap < 0 || swap > 999999999999999) {
+          return res.send({status: "ram size"});
+        }
+        extra.swap = swap;
       }
       
       if (typeof disk == "number") {
@@ -120,7 +130,7 @@ module.exports.load = async function(app, db) {
         extra.servers = servers;
       }
       
-      if (extra.ram == 0 && extra.disk == 0 && extra.cpu == 0 && extra.servers == 0) {
+      if (extra.ram == 0 && extra.swap == 0 && extra.disk == 0 && extra.cpu == 0 && extra.servers == 0) {
         await db.delete("extra-" + req.body.id);
       } else {
         await db.set("extra-" + req.body.id, extra);

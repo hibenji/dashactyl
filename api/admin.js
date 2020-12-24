@@ -37,8 +37,9 @@ module.exports.load = async function(app, db) {
     
         let successredirect = theme.settings.redirect.setresources ? theme.settings.redirect.setresources : "/";
     
-        if (req.query.ram || req.query.disk || req.query.cpu || req.query.servers) {
+        if (req.query.ram || req.query.swap || req.query.disk || req.query.cpu || req.query.servers) {
             let ramstring = req.query.ram;
+            let swapstring = req.query.swap;
             let diskstring = req.query.disk;
             let cpustring = req.query.cpu;
             let serversstring = req.query.servers;
@@ -51,6 +52,7 @@ module.exports.load = async function(app, db) {
             } else {
                 extra = {
                     ram: 0,
+                    swap: 0,
                     disk: 0,
                     cpu: 0,
                     servers: 0
@@ -63,6 +65,14 @@ module.exports.load = async function(app, db) {
                     return res.redirect(`${failredirect}?err=RAMSIZE`);
                 }
                 extra.ram = ram;
+            }
+
+            if (swapstring) {
+                let swap = parseFloat(swapstring);
+                if (swap < 0 || swap > 999999999999999) {
+                    return res.redirect(`${failredirect}?err=SWAPSIZE`);
+                }
+                extra.swap = swap;
             }
             
             if (diskstring) {
@@ -89,7 +99,7 @@ module.exports.load = async function(app, db) {
                 extra.servers = servers;
             }
             
-            if (extra.ram == 0 && extra.disk == 0 && extra.cpu == 0 && extra.servers == 0) {
+            if (extra.ram == 0 && extra.swap == 0 && extra.disk == 0 && extra.cpu == 0 && extra.servers == 0) {
                 await db.delete("extra-" + req.query.id);
             } else {
                 await db.set("extra-" + req.query.id, extra);
@@ -198,6 +208,7 @@ module.exports.load = async function(app, db) {
             await db.get("extra-" + discordid) :
             {
                 ram: 0,
+                swap: 0,
                 disk: 0,
                 cpu: 0,
                 servers: 0
@@ -205,6 +216,7 @@ module.exports.load = async function(app, db) {
 
         let plan = {
             ram: package.ram + extra.ram,
+            swap: package.swap + extra.swap,
             disk: package.disk + extra.disk,
             cpu: package.cpu + extra.cpu,
             servers: package.servers + extra.servers
@@ -212,18 +224,20 @@ module.exports.load = async function(app, db) {
 
         let current = {
             ram: 0,
+            swap: 0,
             disk: 0,
             cpu: 0,
             servers: userinfo.attributes.relationships.servers.data.length
         }
         for (let i = 0, len = userinfo.attributes.relationships.servers.data.length; i < len; i++) {
             current.ram = current.ram + userinfo.attributes.relationships.servers.data[i].attributes.limits.memory;
+            current.swap = current.swap + userinfo.attributes.relationships.servers.data[i].attributes.limits.swap;
             current.disk = current.disk + userinfo.attributes.relationships.servers.data[i].attributes.limits.disk;
             current.cpu = current.cpu + userinfo.attributes.relationships.servers.data[i].attributes.limits.cpu;
         };
 
         indexjs.ratelimits(userinfo.attributes.relationships.servers.data.length);
-        if (current.ram > plan.ram || current.disk > plan.disk || current.cpu > plan.cpu || current.servers > plan.servers) {
+        if (current.ram > plan.ram || current.swap > plan.swap || current.disk > plan.disk || current.cpu > plan.cpu || current.servers > plan.servers) {
             for (let i = 0, len = userinfo.attributes.relationships.servers.data.length; i < len; i++) {
                 let suspendid = userinfo.attributes.relationships.servers.data[i].attributes.id;
                 await fetch(

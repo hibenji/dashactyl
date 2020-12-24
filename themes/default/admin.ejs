@@ -30,9 +30,9 @@
                     <% } else if (req.query.err == "INVALIDID") { %>
                         You have provided a Discord user ID that does not exist, or has not signed up on the dashboard.
                     <% } else if (req.query.err == "MISSINGVARIABLES") { %>
-                        You have not provided either ram, disk, cpu, and/or servers.
-                    <% } else if (req.query.err == "RAMSIZE" || req.query.err == "DISKSIZE" || req.query.err == "CPUSIZE" || req.query.err == "SERVERSIZE") { %>
-                        The RAM, disk, CPU and servers number cannot be less than 0 and must be above 999999999999999.
+                        You have not provided either ram, swap, disk, cpu, and/or servers.
+                    <% } else if (req.query.err == "RAMSIZE" || req.query.err == "SWAPSIZE" || req.query.err == "DISKSIZE" || req.query.err == "CPUSIZE" || req.query.err == "SERVERSIZE") { %>
+                        The RAM, swap, disk, CPU and servers number cannot be less than 0 and must be above 999999999999999.
                     <% } else { %>
                         Stop admin abusing.
                     <% } %>
@@ -75,7 +75,7 @@
         <p style="margin-left: 5%;">Package: <select class="select-selected" id="package">
             <option value="">Default Plan (Currently: <%= settings.api.client.packages.default %>)</option>
             <% for (let [name, value] of Object.entries(settings.api.client.packages.list)) { %>
-                <option value="<%= name %>"><%= name %> (RAM: <%= value.ram %>MB, Disk: <%= value.disk %>MB, CPU: <%= value.cpu %>%, Servers: <%= value.servers %>)</option>
+                <option value="<%= name %>"><%= name %> (RAM: <%= value.ram %>MB, SWAP: <%= value.swap %>MB, Disk: <%= value.disk %>MB, CPU: <%= value.cpu %>%, Servers: <%= value.servers %>)</option>
             <% } %>
         </select></p>
         <center><button onclick="submitForm()" class="button">Change</button></center>
@@ -85,6 +85,8 @@
             <input name="id"><br><br>
             <label for="ram">RAM:</label>
             <input name="ram" type="number"><br><br>
+            <label for="swap">SWAP:</label>
+            <input name="swap" type="number"><br><br>
             <label for="disk">Disk:</label>
             <input name="disk" type="number"><br><br>
             <label for="cpu">CPU:</label>

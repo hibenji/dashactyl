@@ -77,11 +77,13 @@
         <br><br>
         <%
             let ram = 0;
+            let swap = 0;
             let disk = 0;
             let cpu = 0;
             let servers = pterodactyl.relationships.servers.data.length;
             for (let i = 0, len = pterodactyl.relationships.servers.data.length; i < len; i++) {
                 ram = ram + (typeof pterodactyl.relationships.servers.data[i].attributes.limits.memory == "number" ? pterodactyl.relationships.servers.data[i].attributes.limits.memory : 0);
+                swap = swap + (typeof pterodactyl.relationships.servers.data[i].attributes.limits.swap == "number" ? pterodactyl.relationships.servers.data[i].attributes.limits.swap : 0);
                 disk = disk + (typeof pterodactyl.relationships.servers.data[i].attributes.limits.disk == "number" ? pterodactyl.relationships.servers.data[i].attributes.limits.disk : 0);
                 cpu = cpu + (typeof pterodactyl.relationships.servers.data[i].attributes.limits.cpu == "number" ? pterodactyl.relationships.servers.data[i].attributes.limits.cpu : 0);
             }
@@ -93,6 +95,13 @@
                     <h3>RAM</h3>
                     <p><code><%= ram %>MB</code> / <code><%= packages.ram + extraresources.ram %>MB</code></p>
                     <progress value="<%= ram %>" max="<%= packages.ram + extraresources.ram %>" style="width: 100%;"></progress>
+                </div>
+            </div>
+            <div class="column" style="background-color: transparent;">
+                <div class="card">
+                    <h3>SWAP</h3>
+                    <p><code><%= swap %>MB</code> / <code><%= packages.swap + extraresources.swap %>MB</code></p>
+                    <progress value="<%= swap %>" max="<%= packages.swap + extraresources.swap %>" style="width: 100%;"></progress>
                 </div>
             </div>
             <div class="column" style="background-color: transparent;">

@@ -36,7 +36,7 @@ module.exports.load = async function(app, db) {
     if (newsettings.api.client.allow.server.create == true) {
       let redirectlink = theme.settings.redirect.failedcreateserver ? theme.settings.redirect.failedcreateserver : "/"; // fail redirect link
       
-      if (req.query.name && req.query.ram && req.query.disk && req.query.cpu && req.query.egg && req.query.location) {
+      if (req.query.name && req.query.ram && req.query.swap && req.query.disk && req.query.cpu && req.query.egg && req.query.location) {
         try {
           decodeURIComponent(req.query.name)
         } catch(err) {
@@ -51,17 +51,20 @@ module.exports.load = async function(app, db) {
         await db.get("extra-" + req.session.userinfo.id) :
         {
           ram: 0,
+          swap: 0,
           disk: 0,
           cpu: 0,
           servers: 0
         };
 
         let ram2 = 0;
+        let swap2 = 0;
         let disk2 = 0;
         let cpu2 = 0;
         let servers2 = req.session.pterodactyl.relationships.servers.data.length;
         for (let i = 0, len = req.session.pterodactyl.relationships.servers.data.length; i < len; i++) {
           ram2 = ram2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.memory;
+          swap2 = swap2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.memory;
           disk2 = disk2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.disk;
           cpu2 = cpu2 + req.session.pterodactyl.relationships.servers.data[i].attributes.limits.cpu;
         };
@@ -85,17 +88,21 @@ module.exports.load = async function(app, db) {
         let egginfo = newsettings.api.client.eggs[egg];
         if (!newsettings.api.client.eggs[egg]) return res.redirect(`${redirectlink}?err=INVALIDEGG`);
         let ram = parseFloat(req.query.ram);
+        let swap = parseFloat(req.query.swap);
         let disk = parseFloat(req.query.disk);
         let cpu = parseFloat(req.query.cpu);
-        if (!isNaN(ram) && !isNaN(disk) && !isNaN(cpu)) {
+        if (!isNaN(ram) && !isNaN(swap) && !isNaN(disk) && !isNaN(cpu)) {
           if (ram2 + ram > package.ram + extra.ram) return res.redirect(`${redirectlink}?err=EXCEEDRAM&num=${package.ram + extra.ram - ram2}`);
+          if (swap2 + swap > package.swap + extra.swap) return res.redirect(`${redirectlink}?err=EXCEEDSWAP&num=${package.swap + extra.swap - swap2}`);
           if (disk2 + disk > package.disk + extra.disk) return res.redirect(`${redirectlink}?err=EXCEEDDISK&num=${package.disk + extra.disk - disk2}`);
           if (cpu2 + cpu > package.cpu + extra.cpu) return res.redirect(`${redirectlink}?err=EXCEEDCPU&num=${package.cpu + extra.cpu - cpu2}`);
           if (egginfo.minimum.ram) if (ram < egginfo.minimum.ram) return res.redirect(`${redirectlink}?err=TOOLITTLERAM&num=${egginfo.minimum.ram}`);
+          if (egginfo.minimum.swap) if (swap < egginfo.minimum.swap) return res.redirect(`${redirectlink}?err=TOOLITTLESWAP&num=${egginfo.minimum.swap}`);
           if (egginfo.minimum.disk) if (disk < egginfo.minimum.disk) return res.redirect(`${redirectlink}?err=TOOLITTLEDISK&num=${egginfo.minimum.disk}`);
           if (egginfo.minimum.cpu) if (cpu < egginfo.minimum.cpu) return res.redirect(`${redirectlink}?err=TOOLITTLECPU&num=${egginfo.minimum.cpu}`);
           if (egginfo.maximum) {
             if (egginfo.maximum.ram) if (ram > egginfo.maximum.ram) return res.redirect(`${redirectlink}?err=TOOMUCHRAM&num=${egginfo.maximum.ram}`);
+            if (egginfo.maximum.swap) if (swap > egginfo.maximum.swap) return res.redirect(`${redirectlink}?err=TOOMUCHSWAP&num=${egginfo.maximum.swap}`);
             if (egginfo.maximum.disk) if (disk > egginfo.maximum.disk) return res.redirect(`${redirectlink}?err=TOOMUCHDISK&num=${egginfo.maximum.disk}`);
             if (egginfo.maximum.cpu) if (cpu > egginfo.maximum.cpu) return res.redirect(`${redirectlink}?err=TOOMUCHCPU&num=${egginfo.maximum.cpu}`);
           }
@@ -103,12 +110,12 @@ module.exports.load = async function(app, db) {
           let specs = egginfo.info;
           specs["user"] = (await db.get("users-" + req.session.userinfo.id));
           if (!specs["limits"]) specs["limits"] = {
-            swap: 0,
             io: 500,
             backups: 0
           };
           specs.name = name;
           specs.limits.memory = ram;
+          specs.limits.swap = swap;
           specs.limits.disk = disk;
           specs.limits.cpu = cpu;
           if (!specs["deploy"]) specs.deploy = {
@@ -164,10 +171,11 @@ module.exports.load = async function(app, db) {
       if (checkexist.length !== 1) return res.send("Invalid server id.");
   
       let ram = req.query.ram ? (isNaN(parseFloat(req.query.ram)) ? undefined : parseFloat(req.query.ram)) : undefined;
+      let swap = req.query.swap ? (isNaN(parseFloat(req.query.swap)) ? undefined : parseFloat(req.query.swap)) : undefined;
       let disk = req.query.disk ? (isNaN(parseFloat(req.query.disk)) ? undefined : parseFloat(req.query.disk)) : undefined;
       let cpu = req.query.cpu ? (isNaN(parseFloat(req.query.cpu)) ? undefined : parseFloat(req.query.cpu)) : undefined;
   
-      if (ram || disk || cpu) {
+      if (ram || swap || disk || cpu) {
         let newsettings = JSON.parse(fs.readFileSync("./settings.json").toString());
   
         let packagename = await db.get("package-" + req.session.userinfo.id);
@@ -176,10 +184,12 @@ module.exports.load = async function(app, db) {
         let pterorelationshipsserverdata = req.session.pterodactyl.relationships.servers.data.filter(name => name.attributes.id.toString() !== req.query.id);
   
         let ram2 = 0;
+        let swap2 = 0;
         let disk2 = 0;
         let cpu2 = 0;
         for (let i = 0, len = pterorelationshipsserverdata.length; i < len; i++) {
           ram2 = ram2 + pterorelationshipsserverdata[i].attributes.limits.memory;
+          swap2 = swap2 + pterorelationshipsserverdata[i].attributes.limits.swap;
           disk2 = disk2 + pterorelationshipsserverdata[i].attributes.limits.disk;
           cpu2 = cpu2 + pterorelationshipsserverdata[i].attributes.limits.cpu;
         }
@@ -201,28 +211,32 @@ module.exports.load = async function(app, db) {
           await db.get("extra-" + req.session.userinfo.id) :
           {
             ram: 0,
+            swap: 0,
             disk: 0,
             cpu: 0,
             servers: 0
           };
   
         if (ram2 + ram > package.ram + extra.ram) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDRAM&num=${package.ram + extra.ram - ram2}`);
+        if (swap2 + swap > package.swap + extra.swap) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDSWAP&num=${package.swap + extra.swap - swap2}`);
         if (disk2 + disk > package.disk + extra.disk) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDDISK&num=${package.disk + extra.disk - disk2}`);
         if (cpu2 + cpu > package.cpu + extra.cpu) return res.redirect(`${redirectlink}?id=${req.query.id}&err=EXCEEDCPU&num=${package.cpu + extra.cpu - cpu2}`);
         if (egginfo.minimum.ram) if (ram < egginfo.minimum.ram) return res.redirect(`${redirectlink}?id=${req.query.id}&err=TOOLITTLERAM&num=${egginfo.minimum.ram}`);
+        if (egginfo.minimum.swap) if (swap < egginfo.minimum.swap) return res.redirect(`${redirectlink}?id=${req.query.id}&err=TOOLITTLESWAP&num=${egginfo.minimum.swap}`);
         if (egginfo.minimum.disk) if (disk < egginfo.minimum.disk) return res.redirect(`${redirectlink}?id=${req.query.id}&err=TOOLITTLEDISK&num=${egginfo.minimum.disk}`);
         if (egginfo.minimum.cpu) if (cpu < egginfo.minimum.cpu) return res.redirect(`${redirectlink}?id=${req.query.id}&err=TOOLITTLECPU&num=${egginfo.minimum.cpu}`);
         if (egginfo.maximum) {
           if (egginfo.maximum.ram) if (ram > egginfo.maximum.ram) return res.redirect(`${redirectlink}?id=${req.query.id}&err=TOOMUCHRAM&num=${egginfo.maximum.ram}`);
+          if (egginfo.maximum.swap) if (swap > egginfo.maximum.swap) return res.redirect(`${redirectlink}?id=${req.query.id}&err=TOOMUCHSWAP&num=${egginfo.maximum.swap}`);
           if (egginfo.maximum.disk) if (disk > egginfo.maximum.disk) return res.redirect(`${redirectlink}?id=${req.query.id}&err=TOOMUCHDISK&num=${egginfo.maximum.disk}`);
           if (egginfo.maximum.cpu) if (cpu > egginfo.maximum.cpu) return res.redirect(`${redirectlink}?id=${req.query.id}&err=TOOMUCHCPU&num=${egginfo.maximum.cpu}`);
         };
   
         let limits = {
           memory: ram ? ram : checkexist[0].attributes.limits.memory,
+          memory: swap ? swap : checkexist[0].attributes.limits.swap,
           disk: disk ? disk : checkexist[0].attributes.limits.disk,
           cpu: cpu ? cpu : checkexist[0].attributes.limits.cpu,
-          swap: egginfo ? checkexist[0].attributes.limits.swap : 0,
           io: egginfo ? checkexist[0].attributes.limits.io : 500
         };
   

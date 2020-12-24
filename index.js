@@ -30,6 +30,7 @@ module.exports.renderdataeval =
       packagename: req.session.userinfo ? await db.get("package-" + req.session.userinfo.id) ? await db.get("package-" + req.session.userinfo.id) : newsettings.api.client.packages.default : null,
       extraresources: !req.session.userinfo ? null : (await db.get("extra-" + req.session.userinfo.id) ? await db.get("extra-" + req.session.userinfo.id) : {
         ram: 0,
+        swap: 0,
         disk: 0,
         cpu: 0,
         servers: 0

@@ -1,27 +1,23 @@
 {
-  "version": "0.2.8",
+  "version": "0.2.5",
   "defaulttheme": "default",
   "website": {
     "port": 80,
-    "secret": "change this website session secret password, make sure to change this for your website's security"
+    "secret": "fyckfedsag9a"
   },
   "pterodactyl": {
-    "domain": "pterodactyl panel domain",
-    "key": "pterodactyl panel admin api key with all read and writes"
+    "domain": "https://panel.effi.xyz",
+    "key": "FYxOZP6WE8OsPrwM0oMNOWBaX1wqWM4W8uDKbKGu1kXE2JsP"
   },
   "database": "sqlite://database.sqlite",
   "api": {
     "client": {
-       "api": {
-         "enabled": false,
-         "code": "api token here, anyone who has access to this token can ran administrator settings"
-       },
        "bot": {
-         "token": "bot token",
+         "token": "NzU5MTc0MTQwODkxNjI3NTY0.X25qAw.-__QRYctlD-PF5GnSagFgNJ5zoE",
          "joinguild": {
            "_comment": "The Discord bot must be in these servers and have invite permissions.",
-           "enabled": false,
-           "guildid": ["guild id", "another guild id"]
+           "enabled": true,
+           "guildid": ["752203787141120129"]
         }
       },
       "passwordgenerator": {
@@ -45,9 +41,9 @@
       },
       "oauth2": {
         "_comment": "Go to https://discord.dev/ and create an application to set these up.",
-        "id": "discord oauth2 application id",
-        "secret": "discord oauth2 application secret",
-        "link": "discord oauth2 application link without the '/callback'",
+        "id": "759174140891627564",
+        "secret": "1rUZViUybnDmqaIvmSq07II2N4ViVLu-",
+        "link": "http://localhost",
         "callbackpath": "/callback",
         "prompt": true
       },
@@ -67,30 +63,28 @@
         "list": {
           "default": {
             "ram": 1024,
-            "disk": 1024,
+            "swap": 1024,
+            "disk": 10240,
             "cpu": 100,
             "servers": 1
           }
         }
       },
       "locations": {
-        "1": {
-          "name": "Location Name",
-
-          "_comment": "Make 'package' be null to allow anyone with enough resources in their plan to create a server with this location. Also, make the 'package' variable an array, like [], with the location names with quotes to make a user be required to have a plan in order to use the package.",
-          "package": null
-        }
+        "Location Name": 1
       },
       "eggs": {
         "paper": {
           "display": "Paper",
           "minimum": {
             "ram": 1024,
+            "swap": 1024,
             "disk": 1024,
             "cpu": 100
           },
           "maximum": {
             "ram": null,
+            "swap": null,
             "disk": null,
             "cpu": null
           },
@@ -112,11 +106,13 @@
           "display": "Bungeecord",
           "minimum": {
             "ram": 512,
+            "swap": 512,
             "disk": 512,
             "cpu": 75
           },
           "maximum": {
             "ram": null,
+            "swap": null,
             "disk": null,
             "cpu": null
           },

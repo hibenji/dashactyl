@@ -50,6 +50,7 @@ module.exports.load = async function(app, db) {
                     await db.get("extra-" + discordid) :
                     {
                         ram: 0,
+                        swap: 0,
                         disk: 0,
                         cpu: 0,
                         servers: 0
@@ -57,6 +58,7 @@ module.exports.load = async function(app, db) {
         
                 let plan = {
                     ram: package.ram + extra.ram,
+                    swap: package.swap + extra.swap,
                     disk: package.disk + extra.disk,
                     cpu: package.cpu + extra.cpu,
                     servers: package.servers + extra.servers
@@ -64,17 +66,19 @@ module.exports.load = async function(app, db) {
         
                 let current = {
                     ram: 0,
+                    swap: 0,
                     disk: 0,
                     cpu: 0,
                     servers: userinfo.relationships.servers.data.length
                 }
                 for (let i = 0, len = userinfo.relationships.servers.data.length; i < len; i++) {
                     current.ram = current.ram + userinfo.relationships.servers.data[i].attributes.limits.memory;
+                    current.swap = current.swap + userinfo.relationships.servers.data[i].attributes.limits.swap;
                     current.disk = current.disk + userinfo.relationships.servers.data[i].attributes.limits.disk;
                     current.cpu = current.cpu + userinfo.relationships.servers.data[i].attributes.limits.cpu;
                 };
 
-                if (current.ram > plan.ram || current.disk > plan.disk || current.cpu > plan.cpu || current.servers > plan.servers) {
+                if (current.ram > plan.ram || current.swap > plan.swap || current.disk > plan.disk || current.cpu > plan.cpu || current.servers > plan.servers) {
                     return res.send("You could not renew this server, because your servers are exceeding your plan.");
                 };
             };
